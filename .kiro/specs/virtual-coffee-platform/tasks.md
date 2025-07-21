@@ -7,7 +7,7 @@
   - Setup Docker configurations for containerization
   - _Requirements: 15_
 
-- [ ] 2. Implement core data models and database layer
+- [x] 2. Implement core data models and database layer
   - [x] 2.1 Create Python data models with Pydantic
     - Define User, Match, and Configuration models
     - Implement validation methods and business logic
@@ -23,7 +23,7 @@
     - _Requirements: 1, 2, 3, 5_
 
 - [ ] 3. Build authentication and authorization system
-  - [ ] 3.1 Implement JWT token management
+  - [x] 3.1 Implement JWT token management
     - Create JWT token generation and validation utilities
     - Implement token refresh mechanism
     - Add middleware for token validation
