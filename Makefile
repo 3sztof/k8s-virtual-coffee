@@ -1,4 +1,4 @@
-.PHONY: help setup-dev setup-api setup-frontend test-api test-frontend build-api build-frontend deploy-instance destroy-instance setup-argocd setup-operators run-api run-dynamodb-local
+.PHONY: help setup-dev setup-api setup-frontend test-api test-frontend build-api build-frontend deploy-instance destroy-instance setup-argocd setup-operators run-api run-dynamodb-local setup-hooks install-pre-commit run-pre-commit
 
 # Help command
 help:
@@ -15,6 +15,11 @@ help:
 	@echo "  build-api          Build API Docker image"
 	@echo "  build-frontend     Build frontend Docker image"
 	@echo ""
+	@echo "Code Quality Commands:"
+	@echo "  setup-hooks        Setup git hooks for code quality checks"
+	@echo "  install-pre-commit Install pre-commit hooks"
+	@echo "  run-pre-commit     Run pre-commit hooks on all files"
+	@echo ""
 	@echo "Deployment Commands:"
 	@echo "  setup-argocd       Install and configure ArgoCD"
 	@echo "  setup-operators    Install AWS infrastructure operators"
@@ -30,7 +35,7 @@ setup-dev: setup-api setup-frontend
 
 setup-api:
 	@echo "Setting up API development environment..."
-	cd backend/api && pip install -r requirements.txt
+	cd backend/api && uv pip install -r requirements.txt
 
 setup-frontend:
 	@echo "Setting up frontend development environment..."
@@ -39,7 +44,7 @@ setup-frontend:
 # Testing
 test-api:
 	@echo "Running API tests..."
-	cd backend/api && pytest
+	cd backend/api && pytest --cov=. --cov-report=term-missing
 
 test-frontend:
 	@echo "Running frontend tests..."
@@ -78,3 +83,25 @@ ifndef INSTANCE
 endif
 	@echo "Destroying instance $(INSTANCE)..."
 	# This would contain actual cleanup commands
+
+# Code quality setup
+setup-hooks: install-pre-commit
+	@echo "Setting up git hooks for code quality..."
+	pre-commit install
+
+install-pre-commit:
+	@echo "Installing pre-commit..."
+	uv pip install pre-commit
+
+run-pre-commit:
+	@echo "Running pre-commit hooks on all files..."
+	pre-commit run --all-files
+
+# Run local development services
+run-api:
+	@echo "Running API server locally..."
+	cd backend/api && uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+run-dynamodb-local:
+	@echo "Running DynamoDB Local..."
+	.devcontainer/start-dynamodb-local.sh
