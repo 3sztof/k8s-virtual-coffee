@@ -423,15 +423,47 @@ make logs INSTANCE=team-a  # View instance logs
 - **Configuration Validation**: Pre-deployment validation of instance configs
 - **Cleanup Operations**: Safe resource removal with confirmation prompts
 
-### GitOps Workflow
+### GitOps Workflow with App of Apps Pattern
 
 1. **Platform Bootstrap**: `make setup-argocd` initializes the platform
-2. **Instance Deployment**: `make deploy INSTANCE=name` creates new deployments
-3. **Infrastructure Changes**: Committed to infrastructure repository
-4. **ArgoCD Sync**: Automatically applies infrastructure changes
-5. **Application Changes**: Committed to application repository
-6. **Container Build**: CI/CD pipeline builds and pushes images
-7. **ArgoCD Application Sync**: Deploys new application versions
+2. **Operator Deployment**: Infrastructure operators deployed in waves using App of Apps pattern
+   - Wave 1: Core infrastructure operators (CRDs, controllers)
+   - Wave 2: AWS service operators (DynamoDB, SES, IAM)
+   - Wave 3: Application-specific operators
+3. **Instance Deployment**: `make deploy INSTANCE=name` creates new deployments
+4. **Infrastructure Changes**: Committed to infrastructure repository
+5. **ArgoCD Sync**: Automatically applies infrastructure changes following dependency order
+6. **Application Changes**: Committed to application repository
+7. **Container Build**: CI/CD pipeline builds and pushes images
+8. **ArgoCD Application Sync**: Deploys new application versions
+
+#### App of Apps Structure
+
+```mermaid
+graph TD
+    Root[Root Application] --> Operators[Operators App]
+    Root --> Infrastructure[Infrastructure App]
+    Root --> Applications[Applications App]
+    
+    Operators --> Wave1[Wave 1: Core Operators]
+    Operators --> Wave2[Wave 2: AWS Operators]
+    Operators --> Wave3[Wave 3: App Operators]
+    
+    Infrastructure --> DynamoDB[DynamoDB Resources]
+    Infrastructure --> SES[SES Resources]
+    Infrastructure --> IAM[IAM Resources]
+    
+    Applications --> DeploymentA[Deployment A]
+    Applications --> DeploymentB[Deployment B]
+    
+    Wave1 -.-> Wave2
+    Wave2 -.-> Wave3
+    Wave3 -.-> Infrastructure
+    Infrastructure -.-> Applications
+    
+    classDef wave fill:#f9f,stroke:#333,stroke-width:2px
+    class Wave1,Wave2,Wave3 wave
+```
 
 ### Environment Progression
 

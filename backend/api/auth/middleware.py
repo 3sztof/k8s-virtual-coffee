@@ -98,6 +98,9 @@ class JWTAuthMiddleware:
             "/auth/token",
             "/auth/register",
             "/auth/refresh",
+            "/auth/amazon-sso",
+            "/auth/amazon",
+            "/auth/google",
         ]
         
         # Check if the path matches any public endpoint

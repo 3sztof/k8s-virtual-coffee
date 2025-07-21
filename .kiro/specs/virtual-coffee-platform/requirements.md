@@ -83,14 +83,16 @@ The Virtual Coffee Platform is a multi-tenant application that enables teams and
 
 ### Requirement 6 - **MVP**
 
-**User Story:** As a DevOps engineer, I want all infrastructure deployed through ArgoCD, so that deployments are consistent and version-controlled.
+**User Story:** As a DevOps engineer, I want all infrastructure deployed through ArgoCD using the "App of Apps" pattern, so that deployments are consistent, version-controlled, and follow a structured dependency order.
 
 #### Acceptance Criteria
 
 1. WHEN infrastructure changes are committed THEN ArgoCD SHALL automatically deploy the updates
 2. WHEN AWS resources are needed THEN the system SHALL provision them through AWS infrastructure operators
 3. WHEN the application is deployed THEN all components SHALL be running on AWS EKS
-4. IF deployment fails THEN ArgoCD SHALL provide clear error messages and rollback capabilities
+4. WHEN deploying infrastructure THEN the system SHALL use the "App of Apps" pattern to manage dependencies
+5. WHEN components require operators THEN the system SHALL deploy operators in waves before the dependent components
+6. IF deployment fails THEN ArgoCD SHALL provide clear error messages and rollback capabilities
 
 ### Requirement 7 - **MVP**
 

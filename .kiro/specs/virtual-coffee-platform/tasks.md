@@ -30,41 +30,44 @@
     - Write unit tests for token operations
     - _Requirements: 9_
 
-  - [ ] 3.2 Integrate federated authentication providers
+  - [x] 3.2 Integrate federated authentication providers
     - Implement AWS SSO OAuth integration
     - Implement Google OAuth integration
     - Create authentication handlers and callback processing
     - Write integration tests for auth flows
     - _Requirements: 9_
 
-- [ ] 4. Create core backend API services
-  - [ ] 4.1 Implement User service
+- [x] 4. Create core backend API services
+  - [x] 4.1 Implement User service
     - Create user registration and profile management endpoints
     - Implement preference storage and retrieval
     - Add participation status management (pause/resume functionality)
     - Write unit tests for user service operations
     - _Requirements: 1, 2, 13_
 
-  - [ ] 4.2 Implement Configuration service
+  - [x] 4.2 Implement Configuration service
     - Create deployment configuration management
     - Add schedule and timezone handling
     - Implement meeting size configuration
     - Write unit tests for configuration operations
     - _Requirements: 3, 5_
 
-- [ ] 5. Build matching algorithm and scheduler
-  - [ ] 5.1 Implement matching algorithm
+- [-] 5. Build matching algorithm and scheduler
+  - [x] 5.1 Implement matching algorithm
     - Create random matching algorithm with historical avoidance
     - Add preference consideration logic
     - Implement configurable meeting size support
     - Write comprehensive unit tests for matching scenarios
     - _Requirements: 8_
 
-  - [ ] 5.2 Create scheduler component
-    - Implement Kubernetes CronJob for scheduled matching
-    - Add timezone calculation and scheduling logic
-    - Create ArgoCD Workflow integration
-    - Write tests for scheduler execution
+  - [x] 5.2 Create scheduler component
+    - [x] Implement Kubernetes CronJob for scheduled matching
+    - [x] Add timezone calculation and scheduling logic
+    - [x] Create ArgoCD Workflow integration
+    - [x] Write tests for scheduler execution
+    - [ ] Implement actual deployment of CronJob and ArgoCD Workflow manifests to the cluster
+    - [ ] Create send_notifications.py script referenced in the ArgoCD workflow
+    - [ ] Add error handling and retry logic for scheduler operations
     - _Requirements: 3, 8_
 
 - [ ] 6. Implement notification system
@@ -153,8 +156,10 @@
     - Implement namespace isolation for multi-tenancy
     - _Requirements: 5, 6_
 
-  - [ ] 9.2 Configure ArgoCD applications
-    - Create ArgoCD Application manifests for each component
+  - [ ] 9.2 Configure ArgoCD applications using App of Apps pattern
+    - Create root ArgoCD Application to manage the hierarchy
+    - Implement wave-based deployment structure for operators and applications
+    - Create ArgoCD Application manifests for each component with proper dependencies
     - Implement ArgoCD Workflow for scheduled operations
     - Add deployment synchronization policies
     - Write validation tests for Kubernetes configurations

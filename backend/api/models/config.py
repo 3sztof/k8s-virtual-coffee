@@ -1,31 +1,33 @@
-from pydantic import BaseModel, Field, EmailStr, validator
-from typing import List, Optional, Dict
+"""
+Configuration models for the Virtual Coffee Platform.
+"""
+from pydantic import BaseModel, Field, validator
+from typing import List, Optional
 from datetime import datetime
-import re
+import uuid
 
 
 class EmailTemplates(BaseModel):
     """Email templates for notifications."""
     match_notification: str = Field(
-        default="Hello {name}, you've been matched with {partner_names} for a virtual coffee!",
-        description="Template for match notification emails"
+        default="",
+        description="Template for match notifications"
     )
-    reminder: Optional[str] = Field(
-        default="Reminder: You have a virtual coffee scheduled with {partner_names} at {time}.",
-        description="Template for reminder emails"
+    welcome: str = Field(
+        default="",
+        description="Template for welcome emails"
     )
 
 
 class DeploymentConfig(BaseModel):
-    """Configuration model for a virtual coffee deployment."""
+    """Deployment configuration model for the Virtual Coffee Platform."""
     deployment_id: str
     schedule: str = Field(
-        ...,
         description="Cron expression for the matching schedule"
     )
     timezone: str = Field(
         default="UTC",
-        description="Timezone for the deployment"
+        description="Timezone for the schedule"
     )
     meeting_size: int = Field(
         default=2,
@@ -33,25 +35,31 @@ class DeploymentConfig(BaseModel):
         ge=2,
         le=10
     )
-    admin_emails: List[EmailStr] = Field(
+    admin_emails: List[str] = Field(
         default_factory=list,
         description="List of admin email addresses"
     )
-    email_templates: EmailTemplates = Field(default_factory=EmailTemplates)
+    email_templates: EmailTemplates = Field(
+        default_factory=EmailTemplates,
+        description="Email templates for notifications"
+    )
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
     @validator('schedule')
-    def validate_cron_expression(cls, v):
-        # Simple validation for cron expression format
-        cron_pattern = r'^(\*|[0-9]{1,2}|\*\/[0-9]{1,2})\s+(\*|[0-9]{1,2}|\*\/[0-9]{1,2})\s+(\*|[0-9]{1,2}|\*\/[0-9]{1,2})\s+(\*|[0-9]{1,2}|\*\/[0-9]{1,2})\s+(\*|[0-6]|\*\/[0-6])$'
-        if not re.match(cron_pattern, v):
-            raise ValueError('Invalid cron expression format')
+    def validate_schedule(cls, v):
+        """Validate the schedule cron expression."""
+        # Basic validation for cron expression format
+        parts = v.split()
+        if len(parts) != 5:
+            raise ValueError('Schedule must be a valid cron expression with 5 parts')
         return v
 
     @validator('timezone')
     def validate_timezone(cls, v):
-        # This is a simplified validation - in a real app, we'd check against a list of valid timezones
+        """Validate the timezone."""
+        # This is a simplified validation
+        # In a real application, you would validate against a list of valid timezones
         if not v:
             raise ValueError('Timezone cannot be empty')
         return v
@@ -60,16 +68,39 @@ class DeploymentConfig(BaseModel):
         schema_extra = {
             "example": {
                 "deployment_id": "team-a",
-                "schedule": "0 9 * * 1",  # Every Monday at 9 AM
+                "schedule": "0 9 * * 1",  # Every Monday at 9:00
                 "timezone": "America/New_York",
                 "meeting_size": 2,
                 "admin_emails": ["admin@example.com"],
                 "email_templates": {
-                    "match_notification": "Hello {name}, you've been matched with {partner_names} for a virtual coffee!",
-                    "reminder": "Reminder: You have a virtual coffee scheduled with {partner_names} at {time}."
+                    "match_notification": "You have been matched with {{partner_name}}",
+                    "welcome": "Welcome to the Virtual Coffee Platform!"
                 },
                 "created_at": "2023-04-01T12:00:00",
                 "updated_at": "2023-04-01T12:00:00"
+            }
+        }
+
+
+class ConfigCreate(BaseModel):
+    """Schema for configuration creation."""
+    schedule: str
+    timezone: Optional[str] = "UTC"
+    meeting_size: Optional[int] = 2
+    admin_emails: Optional[List[str]] = None
+    email_templates: Optional[EmailTemplates] = None
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "schedule": "0 9 * * 1",  # Every Monday at 9:00
+                "timezone": "America/New_York",
+                "meeting_size": 2,
+                "admin_emails": ["admin@example.com"],
+                "email_templates": {
+                    "match_notification": "You have been matched with {{partner_name}}",
+                    "welcome": "Welcome to the Virtual Coffee Platform!"
+                }
             }
         }
 
@@ -79,33 +110,19 @@ class ConfigUpdate(BaseModel):
     schedule: Optional[str] = None
     timezone: Optional[str] = None
     meeting_size: Optional[int] = None
-    admin_emails: Optional[List[EmailStr]] = None
+    admin_emails: Optional[List[str]] = None
     email_templates: Optional[EmailTemplates] = None
-
-    @validator('schedule')
-    def validate_cron_expression(cls, v):
-        if v is not None:
-            cron_pattern = r'^(\*|[0-9]{1,2}|\*\/[0-9]{1,2})\s+(\*|[0-9]{1,2}|\*\/[0-9]{1,2})\s+(\*|[0-9]{1,2}|\*\/[0-9]{1,2})\s+(\*|[0-9]{1,2}|\*\/[0-9]{1,2})\s+(\*|[0-6]|\*\/[0-6])$'
-            if not re.match(cron_pattern, v):
-                raise ValueError('Invalid cron expression format')
-        return v
-
-    @validator('meeting_size')
-    def validate_meeting_size(cls, v):
-        if v is not None and (v < 2 or v > 10):
-            raise ValueError('Meeting size must be between 2 and 10')
-        return v
 
     class Config:
         schema_extra = {
             "example": {
-                "schedule": "0 14 * * 3",  # Every Wednesday at 2 PM
-                "timezone": "Europe/London",
-                "meeting_size": 3,
-                "admin_emails": ["admin@example.com", "manager@example.com"],
+                "schedule": "0 9 * * 1",  # Every Monday at 9:00
+                "timezone": "America/New_York",
+                "meeting_size": 2,
+                "admin_emails": ["admin@example.com"],
                 "email_templates": {
-                    "match_notification": "Custom match notification template",
-                    "reminder": "Custom reminder template"
+                    "match_notification": "You have been matched with {{partner_name}}",
+                    "welcome": "Welcome to the Virtual Coffee Platform!"
                 }
             }
         }
