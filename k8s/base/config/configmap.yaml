@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: virtual-coffee-config
+data:
+  aws_region: "us-west-2"
+  dynamodb_endpoint: "http://dynamodb-local:8000"
+  oauth_redirect_uri: "http://localhost:8000/auth/callback"
+  api_url: "http://virtual-coffee-backend"

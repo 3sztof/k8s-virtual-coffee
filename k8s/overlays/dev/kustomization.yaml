@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: virtual-coffee-dev
+
+resources:
+- ../../base
+
+namePrefix: dev-
+
+patches:
+- path: patches/configmap.yaml
+- path: patches/ingress.yaml
+
+replicas:
+- name: virtual-coffee-backend
+  count: 1
+- name: virtual-coffee-frontend
+  count: 1
+
+images:
+- name: ${BACKEND_IMAGE}
+  newName: virtual-coffee-backend
+  newTag: latest
+- name: ${FRONTEND_IMAGE}
+  newName: virtual-coffee-frontend
+  newTag: latest
