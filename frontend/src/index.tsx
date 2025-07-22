@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+import '@cloudscape-design/global-styles/index.css';
 import './styles/index.css';
-import App from './App';
-import { AuthProvider } from './contexts/AuthContext';
+import App from './App.js';
+import { AuthProvider } from './contexts/AuthContext.js';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
