@@ -52,7 +52,7 @@
     - Write unit tests for configuration operations
     - _Requirements: 3, 5_
 
-- [-] 5. Build matching algorithm and scheduler
+- [x] 5. Build matching algorithm and scheduler
   - [x] 5.1 Implement matching algorithm
     - Create random matching algorithm with historical avoidance
     - Add preference consideration logic
@@ -65,27 +65,27 @@
     - [x] Add timezone calculation and scheduling logic
     - [x] Create ArgoCD Workflow integration
     - [x] Write tests for scheduler execution
-    - [ ] Implement actual deployment of CronJob and ArgoCD Workflow manifests to the cluster
-    - [ ] Create send_notifications.py script referenced in the ArgoCD workflow
-    - [ ] Add error handling and retry logic for scheduler operations
+    - [x] Implement actual deployment of CronJob and ArgoCD Workflow manifests to the cluster
+    - [x] Create send_notifications.py script referenced in the ArgoCD workflow
+    - [x] Add error handling and retry logic for scheduler operations
     - _Requirements: 3, 8_
 
-- [ ] 6. Implement notification system
-  - [ ] 6.1 Create email notification service (MVP)
+- [x] 6. Implement notification system
+  - [x] 6.1 Create email notification service (MVP)
     - Implement SES integration for email delivery
     - Create email template management
     - Add retry logic for failed notifications
     - Write unit tests for notification service
     - _Requirements: 4_
 
-  - [ ] 6.2 Build notification templates and delivery
+  - [x] 6.2 Build notification templates and delivery
     - Create match notification email templates
     - Implement notification triggering after successful matching
     - Add notification status tracking
     - Write integration tests for email delivery
     - _Requirements: 4_
     
-  - [ ] 6.3 Implement additional messaging channels (Phase 2)
+  - [x] 6.3 Implement additional messaging channels (Phase 2)
     - Create notification channel interface for extensibility
     - Implement Slack integration for notifications
     - Add Telegram messaging support
@@ -96,21 +96,21 @@
     - _Requirements: 4.1_
 
 - [ ] 7. Build REST API endpoints
-  - [ ] 7.1 Create authentication endpoints
+  - [x] 7.1 Create authentication endpoints
     - Implement login, logout, and token refresh endpoints
     - Add user profile retrieval endpoint
     - Create middleware for route protection
     - Write API integration tests for auth endpoints
     - _Requirements: 9_
 
-  - [ ] 7.2 Create user management endpoints
+  - [x] 7.2 Create user management endpoints
     - Implement user registration and profile update endpoints
     - Add preference management endpoints
     - Create participation toggle endpoints
     - Write API integration tests for user endpoints
     - _Requirements: 1, 2, 13_
 
-  - [ ] 7.3 Create match management endpoints
+  - [x] 7.3 Create match management endpoints
     - Implement current and historical match retrieval endpoints
     - Add match status and feedback endpoints
     - Create match history filtering and pagination
