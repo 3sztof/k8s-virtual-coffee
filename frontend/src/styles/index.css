@@ -1,88 +1,30 @@
-/* Global styles */
 body {
   margin: 0;
-  padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f2f3f3;
 }
 
-/* Layout styles */
-#header {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
 }
 
-.notification-container {
-  position: fixed;
-  top: 60px;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-}
-
-/* Login page styles */
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-  background-color: #f2f3f3;
-}
-
-/* Not found page styles */
 .not-found-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   padding: 20px;
-  background-color: #f2f3f3;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .login-container,
-  .not-found-container {
-    padding: 10px;
-  }
-}
-
-/* Theme customization */
-:root {
-  --brand-color: #232f3e;
-  --brand-color-light: #31465f;
-  --brand-color-dark: #1a2532;
-  --accent-color: #ff9900;
-}
-
-/* Utility classes */
-.text-center {
-  text-align: center;
-}
-
-.full-width {
-  width: 100%;
-}
-
-.mt-1 { margin-top: 0.5rem; }
-.mt-2 { margin-top: 1rem; }
-.mt-3 { margin-top: 1.5rem; }
-.mt-4 { margin-top: 2rem; }
-
-.mb-1 { margin-bottom: 0.5rem; }
-.mb-2 { margin-bottom: 1rem; }
-.mb-3 { margin-bottom: 1.5rem; }
-.mb-4 { margin-bottom: 2rem; }
-
-/* Cloudscape overrides */
-.awsui-dark-mode {
-  --brand-color: #31465f;
-  --brand-color-light: #4d6b8f;
-  --brand-color-dark: #1a2532;
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #f8f8f8;
 }
