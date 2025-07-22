@@ -127,22 +127,22 @@
     - Write API integration tests for match endpoints
     - _Requirements: 4, 8_
 
-- [-] 8. Develop frontend application with AWS Cloudscape Design System
-  - [ ] 8.1 Setup Cloudscape component library
+- [x] 8. Develop frontend application with AWS Cloudscape Design System
+  - [x] 8.1 Setup Cloudscape component library
     - Initialize React project with Cloudscape dependencies
     - Create base AppLayout with Cloudscape components
     - Implement responsive layout structure
     - Setup theme and global styles
     - _Requirements: 7_
 
-  - [ ] 8.2 Create authentication components
+  - [x] 8.2 Create authentication components
     - Build login page with federated auth options using Cloudscape Form components
     - Implement authentication state management
     - Create protected route components with Cloudscape navigation
     - Write component unit tests for authentication flows
     - _Requirements: 7, 9_
 
-  - [ ] 8.3 Build user profile and preferences interface
+  - [x] 8.3 Build user profile and preferences interface
     - Create user registration form with Cloudscape Form and Input components
     - Implement preference configuration interface with Cloudscape form components
     - Add participation toggle component using Cloudscape Toggle
@@ -150,7 +150,7 @@
     - Write unit tests for user interface components
     - _Requirements: 1, 2, 7, 13_
 
-  - [ ] 8.4 Create match display and management interface
+  - [x] 8.4 Create match display and management interface
     - Build current match display component using Cloudscape Cards and StatusIndicator
     - Implement match history view with Cloudscape Table component
     - Add match status and feedback interface with Cloudscape components

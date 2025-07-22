@@ -1,64 +1,37 @@
 {
-  "name": "Virtual Coffee Platform Development",
+  "name": "K8s Virtual Coffee Git-Only",
   "build": {
     "dockerfile": "Dockerfile",
     "context": ".."
   },
-  "runArgs": [
-    "--init"
-  ],
-  "mounts": [
-    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
-  ],
+  "runArgs": ["--init"],
+  
+  // Forward ports for development - COMMENTED OUT
+  // "forwardPorts": [
+  //   8000,  // DynamoDB Local
+  //   8001   // FastAPI backend
+  // ],
+  
+  // Install dependencies on container creation - COMMENTED OUT
+  // "postCreateCommand": "pip install -r backend/api/requirements.txt && cd frontend && npm install",
+  
+  // Configure VS Code settings and extensions - MINIMAL VERSION
   "customizations": {
     "vscode": {
       "extensions": [
-        "ms-python.python",
-        "ms-python.vscode-pylance",
-        "ms-azuretools.vscode-docker",
-        "amazonwebservices.aws-toolkit-vscode",
-        "redhat.vscode-yaml",
-        "ms-kubernetes-tools.vscode-kubernetes-tools",
-        "streetsidesoftware.code-spell-checker",
-        "eamodio.gitlens",
-        "ms-vscode.makefile-tools",
-        "njpwerner.autodocstring",
-        "matangover.mypy",
-        "charliermarsh.ruff",
-        "ms-python.black-formatter",
-        "ms-python.isort",
-        "ms-python.flake8"
+        "eamodio.gitlens"
       ],
       "settings": {
-        "python.defaultInterpreterPath": "/usr/local/bin/python",
-        "python.linting.enabled": true,
-        "python.linting.flake8Enabled": true,
-        "python.linting.mypyEnabled": true,
-        "python.formatting.provider": "black",
-        "python.formatting.blackPath": "/usr/local/bin/black",
-        "python.sortImports.path": "/usr/local/bin/isort",
-        "editor.formatOnSave": true,
-        "editor.codeActionsOnSave": {
-          "source.organizeImports": true
-        },
-        "files.exclude": {
-          "**/__pycache__": true,
-          "**/.pytest_cache": true,
-          "**/*.egg-info": true,
-          "**/.coverage": true
-        },
-        "terminal.integrated.defaultProfile.linux": "zsh"
+        "editor.formatOnSave": true
       }
     }
   },
-  "remoteUser": "vscode",
-  "features": {
-    "ghcr.io/devcontainers/features/python:1": {
-      "version": "3.11"
-    },
-    "ghcr.io/devcontainers/features/git:1": {}
-  },
-  "postCreateCommand": "pip install -r backend/api/requirements.txt && pip install black isort flake8 mypy pytest pytest-cov",
-  "postStartCommand": "sudo chmod +x .devcontainer/start-dynamodb-local.sh .devcontainer/localstack-setup.sh && .devcontainer/localstack-setup.sh && .devcontainer/start-dynamodb-local.sh",
-  "initializeCommand": "mkdir -p .dynamodb-local"
+  
+  // Set the remote user
+  "remoteUser": "vscode"
+  
+  // Docker socket mount - COMMENTED OUT
+  // "mounts": [
+  //   "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  // ]
 }
