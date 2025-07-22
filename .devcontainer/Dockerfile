@@ -1,5 +1,5 @@
 # Use minimal base image
-FROM mcr.microsoft.com/devcontainers/base:debian
+FROM mcr.microsoft.com/devcontainers/base:debian-12
 
 # Install only git
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \

@@ -45,9 +45,10 @@ graph TB
         GOOGLE[Google OAuth]
     end
     
-    subgraph "AWS Infrastructure Operators"
-        DDB_OP[DynamoDB Operator]
-        SES_OP[SES Operator]
+    subgraph "Crossplane"
+        XP[Crossplane Core]
+        AWS_P[AWS Provider]
+        COMP[Compositions]
     end
     
     Users --> FE_A
@@ -63,8 +64,11 @@ graph TB
     API_B --> SSO
     API_B --> GOOGLE
     
-    AC --> DDB_OP
-    AC --> SES_OP
+    AC --> XP
+    XP --> AWS_P
+    AWS_P --> DDB
+    AWS_P --> SES
+    XP --> COMP
     AW --> SCHED_A
     AW --> SCHED_B
 ```
@@ -196,19 +200,21 @@ GET  /admin/stats
 ### AWS Infrastructure Components
 
 **Infrastructure Deployment Approach**:
-All AWS resources managed through Kubernetes operators via ArgoCD:
+All AWS resources managed through Crossplane via ArgoCD:
 
-1. **AWS Controllers for Kubernetes (ACK)**:
+1. **Crossplane AWS Provider**:
    - DynamoDB tables and indexes
    - SES configurations and identities
    - Lambda functions and event sources
    - IAM roles and policies
    - Managed through GitOps workflow with ArgoCD
 
-2. **Custom Operators (if needed)**:
-   - Complex resource orchestration
-   - Cross-resource dependencies
+2. **Crossplane Compositions**:
+   - High-level abstractions for deployment resources
+   - Encapsulation of complex resource orchestration
+   - Cross-resource dependencies management
    - Deployment-specific configurations
+   - Reusable templates for multi-tenant deployments
 
 **AWS Resources**:
 
@@ -399,7 +405,7 @@ type ErrorResponse struct {
 # Platform Setup
 make setup-argocd          # Install and configure ArgoCD
 make setup-secrets         # Configure ArgoCD repository secrets
-make setup-operators       # Install AWS infrastructure operators
+make setup-crossplane      # Install Crossplane and AWS provider
 
 # Instance Management  
 make deploy INSTANCE=team-a    # Deploy new virtual coffee instance
@@ -441,28 +447,27 @@ make logs INSTANCE=team-a  # View instance logs
 
 ```mermaid
 graph TD
-    Root[Root Application] --> Operators[Operators App]
+    Root[Root Application] --> Crossplane[Crossplane App]
     Root --> Infrastructure[Infrastructure App]
     Root --> Applications[Applications App]
     
-    Operators --> Wave1[Wave 1: Core Operators]
-    Operators --> Wave2[Wave 2: AWS Operators]
-    Operators --> Wave3[Wave 3: App Operators]
+    Crossplane --> Core[Crossplane Core]
+    Crossplane --> Providers[AWS Provider]
+    Crossplane --> Compositions[Compositions]
     
-    Infrastructure --> DynamoDB[DynamoDB Resources]
-    Infrastructure --> SES[SES Resources]
-    Infrastructure --> IAM[IAM Resources]
+    Infrastructure --> Claims[Resource Claims]
+    Infrastructure --> Configs[Configuration Resources]
     
     Applications --> DeploymentA[Deployment A]
     Applications --> DeploymentB[Deployment B]
     
-    Wave1 -.-> Wave2
-    Wave2 -.-> Wave3
-    Wave3 -.-> Infrastructure
-    Infrastructure -.-> Applications
+    Core -.-> Providers
+    Providers -.-> Compositions
+    Compositions -.-> Claims
+    Claims -.-> Applications
     
-    classDef wave fill:#f9f,stroke:#333,stroke-width:2px
-    class Wave1,Wave2,Wave3 wave
+    classDef xp fill:#f9f,stroke:#333,stroke-width:2px
+    class Core,Providers,Compositions xp
 ```
 
 ### Environment Progression
