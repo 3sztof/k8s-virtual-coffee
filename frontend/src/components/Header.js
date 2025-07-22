@@ -1,12 +1,7 @@
 import React from 'react';
 import { TopNavigation } from '@cloudscape-design/components';
 
-interface HeaderProps {
-  username?: string;
-  onSignOut: () => void;
-}
-
-const Header: React.FC<HeaderProps> = ({ username, onSignOut }) => {
+const Header = ({ username, onSignOut }) => {
   return (
     <TopNavigation
       identity={{
