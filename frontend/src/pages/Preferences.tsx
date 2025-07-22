@@ -17,8 +17,8 @@ import {
   Button,
   ColumnLayout
 } from '@cloudscape-design/components';
-import { useAuth } from '../contexts/AuthContext';
-import { useNotifications } from '../contexts/NotificationContext';
+import { useAuth } from '../contexts/AuthContext.js';
+import { useNotifications } from '../contexts/NotificationContext.js';
 import axios from 'axios';
 
 // API base URL
@@ -133,13 +133,8 @@ const Preferences: React.FC = () => {
     try {
       setIsSubmitting(true);
       
-      await axios.put(`${API_URL}/users/preferences`, {
-        topics: selectedTopics.map(topic => topic.value),
-        availability: selectedAvailability.map(avail => avail.value),
-        meeting_length: selectedMeetingLength ? parseInt(selectedMeetingLength.value as string) : 30
-      }, {
-        withCredentials: true
-      });
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Refresh user data
       await refreshUser();
@@ -170,18 +165,8 @@ const Preferences: React.FC = () => {
     try {
       setIsSubmitting(true);
       
-      await axios.put(`${API_URL}/users/notification-preferences`, {
-        email: emailEnabled,
-        slack: slackEnabled,
-        slack_webhook: slackWebhook,
-        telegram: telegramEnabled,
-        telegram_chat_id: telegramChatId,
-        signal: signalEnabled,
-        signal_number: signalNumber,
-        primary_channel: primaryChannel?.value || 'email'
-      }, {
-        withCredentials: true
-      });
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Refresh user data
       await refreshUser();

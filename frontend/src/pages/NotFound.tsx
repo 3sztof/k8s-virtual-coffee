@@ -4,7 +4,8 @@ import {
   Header, 
   SpaceBetween, 
   Button,
-  Box
+  Box,
+  Alert
 } from '@cloudscape-design/components';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,8 +24,15 @@ const NotFound: React.FC = () => {
         }
       >
         <SpaceBetween size="l">
+          <Alert
+            type="warning"
+            header="404 Error"
+          >
+            The page you are looking for does not exist.
+          </Alert>
+          
           <Box variant="p">
-            The page you are looking for does not exist or has been moved.
+            Please check the URL or navigate back to the dashboard.
           </Box>
           
           <Button

@@ -21,8 +21,8 @@ import {
   Link,
   Grid
 } from '@cloudscape-design/components';
-import { useAuth } from '../contexts/AuthContext';
-import { useNotifications } from '../contexts/NotificationContext';
+import { useAuth } from '../contexts/AuthContext.js';
+import { useNotifications } from '../contexts/NotificationContext.js';
 import axios from 'axios';
 
 // API base URL
@@ -89,54 +89,60 @@ const Dashboard: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<SelectProps.Option | null>(null);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   
-  // Load current match
+  // Mock data for demo
   useEffect(() => {
-    const fetchCurrentMatch = async () => {
-      try {
-        setIsLoadingCurrent(true);
-        const response = await axios.get(`${API_URL}/matches/current`, {
-          withCredentials: true
-        });
-        
-        if (response.data) {
-          setCurrentMatch(response.data);
-        } else {
-          setCurrentMatch(null);
+    // Mock current match
+    const mockCurrentMatch: Match = {
+      id: 'match-1',
+      participants: [
+        { id: 'demo-user-1', name: 'Demo User', email: 'demo@example.com' },
+        { id: 'user-2', name: 'Coffee Partner', email: 'partner@example.com' }
+      ],
+      scheduled_date: new Date(Date.now() + 86400000).toISOString(), // Tomorrow
+      status: 'scheduled',
+      created_at: new Date().toISOString()
+    };
+    
+    // Mock match history
+    const mockMatchHistory: Match[] = [
+      {
+        id: 'match-2',
+        participants: [
+          { id: 'demo-user-1', name: 'Demo User', email: 'demo@example.com' },
+          { id: 'user-3', name: 'Past Partner 1', email: 'past1@example.com' }
+        ],
+        scheduled_date: new Date(Date.now() - 7 * 86400000).toISOString(), // 7 days ago
+        status: 'completed',
+        created_at: new Date(Date.now() - 10 * 86400000).toISOString(),
+        feedback: {
+          rating: 5,
+          comments: 'Great conversation!'
         }
-      } catch (err) {
-        console.error('Error fetching current match:', err);
-        setCurrentMatch(null);
-      } finally {
-        setIsLoadingCurrent(false);
+      },
+      {
+        id: 'match-3',
+        participants: [
+          { id: 'demo-user-1', name: 'Demo User', email: 'demo@example.com' },
+          { id: 'user-4', name: 'Past Partner 2', email: 'past2@example.com' }
+        ],
+        scheduled_date: new Date(Date.now() - 14 * 86400000).toISOString(), // 14 days ago
+        status: 'missed',
+        created_at: new Date(Date.now() - 17 * 86400000).toISOString()
       }
-    };
+    ];
     
-    fetchCurrentMatch();
+    // Set mock data
+    setTimeout(() => {
+      setCurrentMatch(mockCurrentMatch);
+      setIsLoadingCurrent(false);
+    }, 1000);
+    
+    setTimeout(() => {
+      setMatchHistory(mockMatchHistory);
+      setTotalPages(1);
+      setIsLoadingHistory(false);
+    }, 1500);
   }, []);
-  
-  // Load match history
-  useEffect(() => {
-    const fetchMatchHistory = async () => {
-      try {
-        setIsLoadingHistory(true);
-        const response = await axios.get(`${API_URL}/matches/history`, {
-          params: { page: currentPage, limit: 10 },
-          withCredentials: true
-        });
-        
-        setMatchHistory(response.data.matches || []);
-        setTotalPages(response.data.total_pages || 1);
-      } catch (err) {
-        console.error('Error fetching match history:', err);
-        setMatchHistory([]);
-        setTotalPages(1);
-      } finally {
-        setIsLoadingHistory(false);
-      }
-    };
-    
-    fetchMatchHistory();
-  }, [currentPage]);
   
   // Handle feedback submission
   const handleFeedbackSubmit = async () => {
@@ -145,13 +151,8 @@ const Dashboard: React.FC = () => {
     try {
       setIsSubmittingFeedback(true);
       
-      await axios.post(`${API_URL}/matches/feedback`, {
-        match_id: selectedMatch.id,
-        rating: parseInt(feedbackRating.value as string),
-        comments: feedbackComments
-      }, {
-        withCredentials: true
-      });
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Update match in state
       const updatedMatch = {
@@ -204,11 +205,8 @@ const Dashboard: React.FC = () => {
     try {
       setIsUpdatingStatus(true);
       
-      await axios.put(`${API_URL}/matches/${selectedMatch.id}/status`, {
-        status: selectedStatus.value
-      }, {
-        withCredentials: true
-      });
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Update match in state
       const updatedMatch = {
@@ -436,20 +434,22 @@ const Dashboard: React.FC = () => {
             actions={
               <Button
                 onClick={() => {
-                  // Refresh current match
+                  // Refresh current match with mock data
                   setIsLoadingCurrent(true);
-                  axios.get(`${API_URL}/matches/current`, {
-                    withCredentials: true
-                  })
-                    .then(response => {
-                      setCurrentMatch(response.data);
-                    })
-                    .catch(err => {
-                      console.error('Error refreshing current match:', err);
-                    })
-                    .finally(() => {
-                      setIsLoadingCurrent(false);
-                    });
+                  setTimeout(() => {
+                    const mockCurrentMatch: Match = {
+                      id: 'match-1',
+                      participants: [
+                        { id: 'demo-user-1', name: 'Demo User', email: 'demo@example.com' },
+                        { id: 'user-2', name: 'Coffee Partner', email: 'partner@example.com' }
+                      ],
+                      scheduled_date: new Date(Date.now() + 86400000).toISOString(), // Tomorrow
+                      status: 'scheduled',
+                      created_at: new Date().toISOString()
+                    };
+                    setCurrentMatch(mockCurrentMatch);
+                    setIsLoadingCurrent(false);
+                  }, 1000);
                 }}
               >
                 Refresh
@@ -505,22 +505,39 @@ const Dashboard: React.FC = () => {
             actions={
               <Button
                 onClick={() => {
-                  // Refresh match history
+                  // Refresh match history with mock data
                   setIsLoadingHistory(true);
-                  axios.get(`${API_URL}/matches/history`, {
-                    params: { page: currentPage, limit: 10 },
-                    withCredentials: true
-                  })
-                    .then(response => {
-                      setMatchHistory(response.data.matches || []);
-                      setTotalPages(response.data.total_pages || 1);
-                    })
-                    .catch(err => {
-                      console.error('Error refreshing match history:', err);
-                    })
-                    .finally(() => {
-                      setIsLoadingHistory(false);
-                    });
+                  setTimeout(() => {
+                    const mockMatchHistory: Match[] = [
+                      {
+                        id: 'match-2',
+                        participants: [
+                          { id: 'demo-user-1', name: 'Demo User', email: 'demo@example.com' },
+                          { id: 'user-3', name: 'Past Partner 1', email: 'past1@example.com' }
+                        ],
+                        scheduled_date: new Date(Date.now() - 7 * 86400000).toISOString(), // 7 days ago
+                        status: 'completed',
+                        created_at: new Date(Date.now() - 10 * 86400000).toISOString(),
+                        feedback: {
+                          rating: 5,
+                          comments: 'Great conversation!'
+                        }
+                      },
+                      {
+                        id: 'match-3',
+                        participants: [
+                          { id: 'demo-user-1', name: 'Demo User', email: 'demo@example.com' },
+                          { id: 'user-4', name: 'Past Partner 2', email: 'past2@example.com' }
+                        ],
+                        scheduled_date: new Date(Date.now() - 14 * 86400000).toISOString(), // 14 days ago
+                        status: 'missed',
+                        created_at: new Date(Date.now() - 17 * 86400000).toISOString()
+                      }
+                    ];
+                    setMatchHistory(mockMatchHistory);
+                    setTotalPages(1);
+                    setIsLoadingHistory(false);
+                  }, 1000);
                 }}
               >
                 Refresh

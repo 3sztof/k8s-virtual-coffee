@@ -13,8 +13,8 @@ import {
   Alert,
   Spinner
 } from '@cloudscape-design/components';
-import { useAuth } from '../contexts/AuthContext';
-import { useNotifications } from '../contexts/NotificationContext';
+import { useAuth } from '../contexts/AuthContext.js';
+import { useNotifications } from '../contexts/NotificationContext.js';
 import axios from 'axios';
 
 // API base URL
@@ -34,13 +34,8 @@ const Profile: React.FC = () => {
     try {
       setIsSubmitting(true);
       
-      // Update user profile
-      await axios.put(`${API_URL}/users/profile`, {
-        name,
-        is_paused: isPaused
-      }, {
-        withCredentials: true
-      });
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Refresh user data
       await refreshUser();
@@ -85,12 +80,8 @@ const Profile: React.FC = () => {
       try {
         setIsSubmitting(true);
         
-        // Update participation status
-        await axios.put(`${API_URL}/users/participation`, {
-          is_paused: checked
-        }, {
-          withCredentials: true
-        });
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
         
         // Refresh user data
         await refreshUser();
