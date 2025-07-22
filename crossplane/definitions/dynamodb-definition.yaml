@@ -1,0 +1,42 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: virtualcoffeedynamodbs.virtualcoffee.io
+spec:
+  group: virtualcoffee.io
+  names:
+    kind: VirtualCoffeeDynamoDB
+    plural: virtualcoffeedynamodbs
+  claimNames:
+    kind: VirtualCoffeeDynamoDBClaim
+    plural: virtualcoffeedynamodbclaims
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              parameters:
+                type: object
+                properties:
+                  region:
+                    type: string
+                    description: "AWS region for the DynamoDB tables"
+                    default: "us-west-2"
+                  readCapacity:
+                    type: integer
+                    description: "Read capacity units for the DynamoDB tables"
+                    default: 5
+                  writeCapacity:
+                    type: integer
+                    description: "Write capacity units for the DynamoDB tables"
+                    default: 5
+                required:
+                - region
+            required:
+            - parameters
