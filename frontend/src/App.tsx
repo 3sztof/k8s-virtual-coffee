@@ -12,7 +12,7 @@ import Unauthorized from './pages/Unauthorized';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const App: React.FC = () => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   
