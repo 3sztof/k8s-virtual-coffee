@@ -11,17 +11,13 @@ import {
 import { useAuth } from '../contexts/AuthContext.js';
 import Header from '../components/Header.js';
 
-interface MainLayoutProps {
-  children: React.ReactNode;
-}
-
-const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+const MainLayout = ({ children }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [activeHref, setActiveHref] = useState(window.location.pathname);
   
   // Handle navigation
-  const handleNavigate = (href: string) => {
+  const handleNavigate = (href) => {
     setActiveHref(href);
     navigate(href);
   };
