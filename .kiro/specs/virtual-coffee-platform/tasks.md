@@ -1,5 +1,15 @@
 # Implementation Plan
 
+## Task Completion Guidelines
+
+- Before committing, run pre-commit hooks to fix static code issues
+- After completing any task or subtask, all changes should be committed to git
+- Commit messages should follow the format: `Task [TASK_NUMBER]: [TASK_TITLE]`
+- Include a brief description of what was implemented in the commit message
+- For more details, see the steering rules in:
+  - `.kiro/steering/auto-commit-tasks.md`
+  - `.kiro/steering/pre-commit-hooks.md`
+
 - [x] 1. Setup project structure and development environment
   - Setup Python FastAPI project structure
   - Initialize React frontend project with TypeScript configuration
@@ -117,7 +127,7 @@
     - Write API integration tests for match endpoints
     - _Requirements: 4, 8_
 
-- [ ] 8. Develop frontend application with AWS Cloudscape Design System
+- [-] 8. Develop frontend application with AWS Cloudscape Design System
   - [ ] 8.1 Setup Cloudscape component library
     - Initialize React project with Cloudscape dependencies
     - Create base AppLayout with Cloudscape components
