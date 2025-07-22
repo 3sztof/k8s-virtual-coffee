@@ -1,0 +1,98 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: virtualcoffee-dynamodb
+  labels:
+    provider: aws
+    service: dynamodb
+spec:
+  compositeTypeRef:
+    apiVersion: virtualcoffee.io/v1alpha1
+    kind: VirtualCoffeeDynamoDB
+  resources:
+    - name: dynamodb-table-users
+      base:
+        apiVersion: dynamodb.aws.crossplane.io/v1alpha1
+        kind: Table
+        spec:
+          forProvider:
+            region: us-west-2
+            attributeDefinitions:
+              - attributeName: id
+                attributeType: S
+            keySchema:
+              - attributeName: id
+                keyType: HASH
+            provisionedThroughput:
+              readCapacityUnits: 5
+              writeCapacityUnits: 5
+            tags:
+              - key: Name
+                value: virtualcoffee-users
+          writeConnectionSecretToRef:
+            namespace: crossplane-system
+      patches:
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.region
+        - fromFieldPath: spec.parameters.readCapacity
+          toFieldPath: spec.forProvider.provisionedThroughput.readCapacityUnits
+        - fromFieldPath: spec.parameters.writeCapacity
+          toFieldPath: spec.forProvider.provisionedThroughput.writeCapacityUnits
+    
+    - name: dynamodb-table-matches
+      base:
+        apiVersion: dynamodb.aws.crossplane.io/v1alpha1
+        kind: Table
+        spec:
+          forProvider:
+            region: us-west-2
+            attributeDefinitions:
+              - attributeName: id
+                attributeType: S
+            keySchema:
+              - attributeName: id
+                keyType: HASH
+            provisionedThroughput:
+              readCapacityUnits: 5
+              writeCapacityUnits: 5
+            tags:
+              - key: Name
+                value: virtualcoffee-matches
+          writeConnectionSecretToRef:
+            namespace: crossplane-system
+      patches:
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.region
+        - fromFieldPath: spec.parameters.readCapacity
+          toFieldPath: spec.forProvider.provisionedThroughput.readCapacityUnits
+        - fromFieldPath: spec.parameters.writeCapacity
+          toFieldPath: spec.forProvider.provisionedThroughput.writeCapacityUnits
+    
+    - name: dynamodb-table-config
+      base:
+        apiVersion: dynamodb.aws.crossplane.io/v1alpha1
+        kind: Table
+        spec:
+          forProvider:
+            region: us-west-2
+            attributeDefinitions:
+              - attributeName: id
+                attributeType: S
+            keySchema:
+              - attributeName: id
+                keyType: HASH
+            provisionedThroughput:
+              readCapacityUnits: 5
+              writeCapacityUnits: 5
+            tags:
+              - key: Name
+                value: virtualcoffee-config
+          writeConnectionSecretToRef:
+            namespace: crossplane-system
+      patches:
+        - fromFieldPath: spec.parameters.region
+          toFieldPath: spec.forProvider.region
+        - fromFieldPath: spec.parameters.readCapacity
+          toFieldPath: spec.forProvider.provisionedThroughput.readCapacityUnits
+        - fromFieldPath: spec.parameters.writeCapacity
+          toFieldPath: spec.forProvider.provisionedThroughput.writeCapacityUnits
