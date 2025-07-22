@@ -13,7 +13,7 @@
   // ],
   
   // Install dependencies on container creation - COMMENTED OUT
-  // "postCreateCommand": "pip install -r backend/api/requirements.txt && cd frontend && npm install",
+  // "postCreateCommand": "uv pip install -e '.[dev]' && cd frontend && npm install",
   
   // Configure VS Code settings and extensions - MINIMAL VERSION
   "customizations": {

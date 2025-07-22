@@ -35,7 +35,7 @@ setup-dev: setup-api setup-frontend
 
 setup-api:
 	@echo "Setting up API development environment..."
-	cd backend/api && uv pip install -r requirements.txt
+	uv pip install -e ".[dev]"
 
 setup-frontend:
 	@echo "Setting up frontend development environment..."

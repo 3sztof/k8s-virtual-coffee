@@ -80,14 +80,14 @@ Key deployment features:
 
 1. Set up a virtual environment:
    ```bash
-   cd backend/api
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
    ```
 
-2. Install dependencies:
+2. Install dependencies using uv:
    ```bash
-   pip install -r requirements.txt
+   pip install uv
+   uv pip install -e ".[dev]"
    ```
 
 3. Set up local DynamoDB:
