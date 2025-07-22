@@ -1,34 +1,14 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
-
-// Notification interface
-interface Notification {
-  id: string;
-  type: 'success' | 'error' | 'info' | 'warning';
-  content: string;
-  dismissible: boolean;
-  onDismiss: () => void;
-}
-
-// Notification context interface
-interface NotificationContextType {
-  addNotification: (notification: Omit<Notification, 'id'>) => void;
-  removeNotification: (id: string) => void;
-  clearNotifications: () => void;
-}
+import React, { createContext, useState, useContext } from 'react';
 
 // Create context
-const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
+const NotificationContext = createContext();
 
 // Provider component
-interface NotificationProviderProps {
-  children: ReactNode;
-}
-
-export const NotificationProvider: React.FC<NotificationProviderProps> = ({ children }) => {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+export const NotificationProvider = ({ children }) => {
+  const [notifications, setNotifications] = useState([]);
   
   // Add notification
-  const addNotification = (notification: Omit<Notification, 'id'>) => {
+  const addNotification = (notification) => {
     const id = Math.random().toString(36).substring(2, 9);
     setNotifications(prev => [...prev, { ...notification, id }]);
     
@@ -41,7 +21,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
   };
   
   // Remove notification
-  const removeNotification = (id: string) => {
+  const removeNotification = (id) => {
     setNotifications(prev => prev.filter(notification => notification.id !== id));
   };
   

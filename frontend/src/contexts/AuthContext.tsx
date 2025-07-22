@@ -1,14 +1,15 @@
-import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import axios from 'axios';
-import { useNavigate, useLocation } from 'react-router-dom';
 
-// Define types
+// API base URL
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
+// User interface
 interface User {
   id: string;
   name: string;
   email: string;
   is_paused: boolean;
-  is_admin?: boolean;
   preferences?: {
     topics: string[];
     availability: string[];
@@ -17,18 +18,16 @@ interface User {
   notification_prefs?: {
     email: boolean;
     slack: boolean;
+    slack_webhook?: string;
     telegram: boolean;
+    telegram_chat_id?: string;
     signal: boolean;
+    signal_number?: string;
     primary_channel: string;
   };
 }
 
-interface AuthState {
-  isAuthenticated: boolean;
-  user: User | null;
-  token: string | null;
-}
-
+// Auth context interface
 interface AuthContextType {
   user: User | null;
   loading: boolean;
@@ -43,144 +42,69 @@ interface AuthContextType {
 // Create context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// API base URL
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-
-// Setup axios interceptor for authentication
-const setupAxiosInterceptors = (logout: () => void) => {
-  axios.interceptors.response.use(
-    response => response,
-    error => {
-      if (error.response && error.response.status === 401) {
-        // Auto logout if 401 response returned from API
-        logout();
-      }
-      return Promise.reject(error);
-    }
-  );
-};
-
 // Provider component
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [authState, setAuthState] = useState<AuthState>({
-    isAuthenticated: false,
-    user: null,
-    token: null
-  });
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  // Logout function
-  const logout = useCallback(async () => {
-    try {
-      await axios.post(`${API_URL}/auth/logout`, {}, {
-        withCredentials: true
-      });
-      
-      // Clear auth state
-      setAuthState({
-        isAuthenticated: false,
-        user: null,
-        token: null
-      });
-      
-      // Clear any stored tokens
-      localStorage.removeItem('auth_token');
-      
-      // Redirect to login
-      navigate('/login');
-    } catch (err) {
-      setError('Failed to logout');
-      console.error('Logout error:', err);
-    }
-  }, [navigate]);
-
-  // Setup axios interceptors
+  
+  // Check if user is authenticated on mount
   useEffect(() => {
-    setupAxiosInterceptors(logout);
-  }, [logout]);
-
-  // Initialize auth state
-  useEffect(() => {
-    const initAuth = async () => {
+    const checkAuth = async () => {
       try {
         setLoading(true);
-        
-        // Check for token in URL (OAuth callback)
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
-        
-        if (token) {
-          // Store token and remove from URL
-          localStorage.setItem('auth_token', token);
-          navigate(location.pathname, { replace: true });
-        }
-        
-        // Try to get user data
-        const storedToken = localStorage.getItem('auth_token');
-        
-        if (storedToken) {
-          // Set auth header
-          axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
-          
-          // Get user data
-          const response = await axios.get(`${API_URL}/auth/me`, {
-            withCredentials: true
-          });
-          
-          setAuthState({
-            isAuthenticated: true,
-            user: response.data,
-            token: storedToken
-          });
-          
-          setError(null);
-        } else {
-          // No token found
-          setAuthState({
-            isAuthenticated: false,
-            user: null,
-            token: null
-          });
-        }
-      } catch (err) {
-        // Clear invalid auth state
-        setAuthState({
-          isAuthenticated: false,
-          user: null,
-          token: null
+        const response = await axios.get(`${API_URL}/auth/me`, {
+          withCredentials: true
         });
         
-        localStorage.removeItem('auth_token');
-        
-        // Don't set error on initial load if not authenticated
-        if (localStorage.getItem('auth_token')) {
-          setError('Authentication session expired');
+        if (response.data) {
+          setUser(response.data);
+        } else {
+          setUser(null);
         }
+      } catch (err) {
+        console.error('Auth check error:', err);
+        setUser(null);
       } finally {
         setLoading(false);
       }
     };
-
-    initAuth();
-  }, [location.pathname, navigate]);
-
+    
+    checkAuth();
+  }, []);
+  
   // Login function
   const login = (provider: string) => {
-    // Get deployment ID from URL or use default
-    const urlParams = new URLSearchParams(window.location.search);
-    const deploymentId = urlParams.get('deployment') || 'default';
+    setLoading(true);
+    setError(null);
     
-    // Store current location for redirect after login
-    const returnTo = location.pathname !== '/login' ? location.pathname : '/';
-    localStorage.setItem('auth_redirect', returnTo);
+    // Store current path for redirect after login
+    localStorage.setItem('auth_redirect', window.location.pathname);
     
-    // Redirect to OAuth provider
-    window.location.href = `${API_URL}/auth/${provider}?deployment_id=${deploymentId}&redirect_uri=${window.location.origin}/login`;
+    // Redirect to auth endpoint
+    window.location.href = `${API_URL}/auth/${provider}/login`;
   };
-
+  
+  // Logout function
+  const logout = async () => {
+    try {
+      setLoading(true);
+      await axios.post(`${API_URL}/auth/logout`, {}, {
+        withCredentials: true
+      });
+      setUser(null);
+    } catch (err) {
+      console.error('Logout error:', err);
+      setError('Failed to logout');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   // Refresh user data
   const refreshUser = async () => {
     try {
@@ -189,15 +113,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         withCredentials: true
       });
       
-      setAuthState(prev => ({
-        ...prev,
-        user: response.data
-      }));
-      
-      setError(null);
+      if (response.data) {
+        setUser(response.data);
+      }
     } catch (err) {
-      setError('Failed to refresh user data');
-      console.error('Refresh user error:', err);
+      console.error('User refresh error:', err);
     } finally {
       setLoading(false);
     }
@@ -207,18 +127,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const clearError = () => {
     setError(null);
   };
-
+  
+  // For development/demo purposes, always simulate a logged-in user
+  useEffect(() => {
+    // Using a demo user for development
+    const demoUser: User = {
+      id: 'demo-user-1',
+      name: 'Demo User',
+      email: 'demo@example.com',
+      is_paused: false,
+      preferences: {
+        topics: ['work', 'tech', 'career'],
+        availability: ['mon-am', 'wed-pm', 'fri-am'],
+        meeting_length: 30
+      },
+      notification_prefs: {
+        email: true,
+        slack: false,
+        telegram: false,
+        signal: false,
+        primary_channel: 'email'
+      }
+    };
+    
+    setUser(demoUser);
+    setLoading(false);
+  }, []);
+  
   return (
-    <AuthContext.Provider value={{ 
-      user: authState.user, 
-      loading, 
-      error, 
-      isAuthenticated: authState.isAuthenticated,
-      login, 
-      logout, 
-      refreshUser,
-      clearError
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        error,
+        isAuthenticated: !!user,
+        login,
+        logout,
+        refreshUser,
+        clearError
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
