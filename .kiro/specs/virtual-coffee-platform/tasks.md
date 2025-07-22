@@ -158,7 +158,7 @@
     - Write unit tests for match interface components
     - _Requirements: 4, 7_
 
-- [-] 9. Implement Kubernetes deployment configurations
+- [x] 9. Implement Kubernetes deployment configurations
   - [ ] 9.1 Create Kubernetes manifests
     - Write deployment manifests for Python FastAPI and frontend
     - Create service and ingress configurations
