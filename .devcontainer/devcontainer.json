@@ -1,10 +1,15 @@
 {
   "name": "Virtual Coffee Platform Development",
-  "dockerFile": "Dockerfile",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
   "runArgs": [
-    "--network=host"
+    "--init"
   ],
-  "forwardPorts": [8000],
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
   "customizations": {
     "vscode": {
       "extensions": [
@@ -48,24 +53,12 @@
   },
   "remoteUser": "vscode",
   "features": {
-    "ghcr.io/devcontainers/features/aws-cli:1": {
-      "version": "latest"
-    },
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {
-      "version": "latest"
-    },
-    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
-      "version": "latest"
-    },
     "ghcr.io/devcontainers/features/python:1": {
       "version": "3.11"
     },
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "lts"
-    },
-    "ghcr.io/devcontainers/features/git:1": {
-      "version": "latest"
-    }
+    "ghcr.io/devcontainers/features/git:1": {}
   },
-  "postCreateCommand": "pip install -r backend/api/requirements.txt && pip install black isort flake8 mypy pytest pytest-cov"
+  "postCreateCommand": "pip install -r backend/api/requirements.txt && pip install black isort flake8 mypy pytest pytest-cov",
+  "postStartCommand": "sudo chmod +x .devcontainer/start-dynamodb-local.sh .devcontainer/localstack-setup.sh && .devcontainer/localstack-setup.sh && .devcontainer/start-dynamodb-local.sh",
+  "initializeCommand": "mkdir -p .dynamodb-local"
 }

@@ -9,14 +9,16 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     jq \
     make \
     vim \
+    unzip \
     && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-# Install AWS DynamoDB local
-RUN mkdir -p /opt/dynamodb && \
-    curl -L https://d1ni2b6xgvw0s0.cloudfront.net/v2.0/dynamodb_local_latest.tar.gz | tar xz -C /opt/dynamodb
+# Install AWS CLI
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip" \
+    && unzip awscliv2.zip \
+    && ./aws/install \
+    && rm -rf aws awscliv2.zip
 
-# Install Oh My Zsh for better terminal experience
-RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+# Oh My Zsh is already installed in the base image
 
 # Set up Python environment
 ENV PYTHONUNBUFFERED=1 \
