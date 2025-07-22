@@ -1,0 +1,12 @@
+apiVersion: pkg.crossplane.io/v1alpha1
+kind: ControllerConfig
+metadata:
+  name: aws-controller-config
+spec:
+  podSecurityContext:
+    fsGroup: 2000
+  args:
+    - --debug
+  env:
+    - name: AWS_REGION
+      value: us-west-2
