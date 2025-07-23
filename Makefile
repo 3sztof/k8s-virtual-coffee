@@ -31,10 +31,12 @@ help:
 	@echo "  destroy-instance   Safely destroy an instance and resources"
 	@echo ""
 	@echo "Monitoring Commands:"
-	@echo "  check-crossplane-status Check status of Crossplane resources"
-	@echo "  check-argocd-status     Check status of ArgoCD applications"
-	@echo "  check-instance-status   Check status of a specific instance"
-	@echo "  setup-monitoring        Setup monitoring for the platform"
+	@echo "  check-crossplane-status       Check status of Crossplane resources"
+	@echo "  check-argocd-status           Check status of ArgoCD applications"
+	@echo "  check-instance-status         Check status of a specific instance"
+	@echo "  validate-deployment           Run comprehensive deployment validation"
+	@echo "  validate-deployment-with-rollback  Run deployment validation with rollback tests"
+	@echo "  setup-monitoring              Setup monitoring for the platform"
 	@echo ""
 	@echo "Usage Examples:"
 	@echo "  make deploy-instance INSTANCE=team-a"
@@ -207,6 +209,20 @@ endif
 	kubectl get pods -n $(INSTANCE)
 	@echo "\nServices:"
 	kubectl get services -n $(INSTANCE)
+
+validate-deployment:
+ifndef INSTANCE
+	$(error INSTANCE is not set. Usage: make validate-deployment INSTANCE=team-a)
+endif
+	@echo "Running comprehensive deployment validation for instance $(INSTANCE)..."
+	python scripts/validate_deployment.py --instance $(INSTANCE)
+
+validate-deployment-with-rollback:
+ifndef INSTANCE
+	$(error INSTANCE is not set. Usage: make validate-deployment-with-rollback INSTANCE=team-a)
+endif
+	@echo "Running comprehensive deployment validation with rollback tests for instance $(INSTANCE)..."
+	python scripts/validate_deployment.py --instance $(INSTANCE) --validate-rollback
 
 setup-monitoring:
 	@echo "Setting up monitoring for the platform..."
