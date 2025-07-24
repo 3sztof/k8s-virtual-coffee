@@ -482,3 +482,359 @@ graph TD
 - Database migration rollback procedures
 - Blue-green deployment for zero-downtime updates
 - `make rollback INSTANCE=name` for manual rollback operations
+
+## CLI Tool Architecture
+
+### Overview
+
+The Virtual Coffee CLI tool (`vc`) is designed to replace and enhance the Makefile-based operations with a comprehensive Python-based command-line interface. The CLI provides better user experience, validation, error handling, and automation for managing virtual coffee platform deployments.
+
+### CLI Tool Design Principles
+
+- **User-Friendly**: Intuitive commands with helpful error messages and guidance
+- **Validation-First**: Comprehensive validation at every step with detailed feedback
+- **Git-Integrated**: Seamless integration with Git workflows and fork management
+- **Configuration-Driven**: Centralized configuration management with schema validation
+- **Atomic Operations**: Safe deployment operations with rollback capabilities
+- **Developer Experience**: Enhanced development workflow automation
+
+### CLI Architecture Components
+
+```mermaid
+graph TB
+    subgraph "CLI Tool (vc)"
+        CLI[CLI Entry Point]
+        CONFIG[Configuration Management]
+        DEPLOY[Deployment Engine]
+        INSTANCE[Instance Management]
+        GIT[Git Integration]
+        AWS[AWS Client]
+        K8S[Kubernetes Client]
+        DEV[Development Tools]
+        INFRA[Infrastructure Management]
+    end
+
+    subgraph "External Systems"
+        REPO[Git Repository]
+        CLUSTER[Kubernetes Cluster]
+        AWSCLOUD[AWS Cloud]
+        LOCAL[Local Development]
+    end
+
+    CLI --> CONFIG
+    CLI --> DEPLOY
+    CLI --> INSTANCE
+    CLI --> GIT
+    CLI --> AWS
+    CLI --> K8S
+    CLI --> DEV
+    CLI --> INFRA
+
+    CONFIG --> REPO
+    DEPLOY --> CLUSTER
+    INSTANCE --> CLUSTER
+    GIT --> REPO
+    AWS --> AWSCLOUD
+    K8S --> CLUSTER
+    DEV --> LOCAL
+    INFRA --> CLUSTER
+
+    classDef cli fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef external fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    
+    class CLI,CONFIG,DEPLOY,INSTANCE,GIT,AWS,K8S,DEV,INFRA cli
+    class REPO,CLUSTER,AWSCLOUD,LOCAL external
+```
+
+### CLI Command Structure
+
+The CLI follows a hierarchical command structure with logical groupings:
+
+```
+vc
+├── config
+│   ├── init          # Initialize configuration with templates
+│   ├── validate      # Validate configuration files
+│   └── show          # Display current configuration
+├── instance
+│   ├── list          # List all instances with status
+│   ├── add           # Add new instance with wizard
+│   ├── remove        # Remove instance with cleanup validation
+│   └── status        # Show detailed instance status
+├── deploy
+│   ├── generate      # Generate deployment files from config
+│   ├── apply         # Apply deployment to cluster
+│   ├── destroy       # Safely destroy deployment resources
+│   └── status        # Monitor deployment status
+├── repo
+│   ├── init          # Initialize fork and setup remotes
+│   ├── status        # Show fork sync status
+│   ├── sync          # Sync with upstream repository
+│   └── configure     # Configure Git remotes and settings
+├── dev
+│   ├── setup         # Setup complete development environment
+│   ├── run-api       # Run local API server
+│   ├── run-dynamodb  # Run local DynamoDB
+│   └── test          # Run comprehensive tests
+└── infra
+    ├── setup-crossplane    # Install and configure Crossplane
+    ├── setup-argocd       # Install and configure ArgoCD
+    └── setup-monitoring   # Install monitoring stack
+```
+
+### Configuration Management System
+
+**Configuration Schema**:
+The CLI uses Pydantic models for configuration validation with comprehensive error reporting:
+
+```python
+class PlatformConfig(BaseModel):
+    """Main platform configuration"""
+    version: str = "v1"
+    metadata: PlatformMetadata
+    instances: Dict[str, InstanceConfig]
+    global_settings: GlobalSettings
+
+class InstanceConfig(BaseModel):
+    """Individual instance configuration"""
+    name: str
+    namespace: str
+    domain: str
+    schedule: ScheduleConfig
+    authentication: AuthConfig
+    notifications: NotificationConfig
+    resources: ResourceConfig
+
+class ScheduleConfig(BaseModel):
+    """Meeting schedule configuration"""
+    cron_expression: str
+    timezone: str
+    meeting_size: int = 2
+    exclude_recent_matches: int = 3
+
+class AuthConfig(BaseModel):
+    """Authentication configuration"""
+    providers: List[AuthProvider]
+    jwt_secret_name: str
+    session_timeout: int = 3600
+
+class NotificationConfig(BaseModel):
+    """Notification settings"""
+    email: EmailConfig
+    slack: Optional[SlackConfig] = None
+    telegram: Optional[TelegramConfig] = None
+    signal: Optional[SignalConfig] = None
+```
+
+**Configuration Discovery and Loading**:
+- Automatic discovery of configuration files in standard locations
+- Support for multiple configuration file formats (YAML, JSON)
+- Environment-specific configuration overrides
+- Configuration file validation with detailed error messages
+- Configuration backup and versioning
+
+### Deployment File Generation Engine
+
+**Template System**:
+The CLI uses Jinja2 templates for generating deployment files:
+
+```python
+class DeploymentGenerator:
+    """Generates deployment files from configuration"""
+    
+    def __init__(self, config: PlatformConfig):
+        self.config = config
+        self.template_env = self._setup_jinja_env()
+    
+    def generate_kubernetes_manifests(self, instance: str) -> Dict[str, str]:
+        """Generate Kubernetes manifests for instance"""
+        
+    def generate_crossplane_resources(self, instance: str) -> Dict[str, str]:
+        """Generate Crossplane resource definitions"""
+        
+    def generate_argocd_applications(self, instance: str) -> Dict[str, str]:
+        """Generate ArgoCD application manifests"""
+```
+
+**Generated Resources**:
+- Kubernetes Deployments, Services, and Ingress resources
+- Crossplane Composite Resource Claims for AWS resources
+- ArgoCD Application manifests with proper sync policies
+- ConfigMaps and Secrets with instance-specific values
+- RBAC resources with minimal required permissions
+
+### Instance Management System
+
+**Instance Lifecycle**:
+```python
+class InstanceManager:
+    """Manages virtual coffee instance lifecycle"""
+    
+    def list_instances(self) -> List[InstanceStatus]:
+        """List all instances with detailed status"""
+        
+    def add_instance(self, config: InstanceConfig) -> InstanceResult:
+        """Add new instance with validation"""
+        
+    def remove_instance(self, name: str, force: bool = False) -> RemovalResult:
+        """Remove instance with cleanup validation"""
+        
+    def get_instance_status(self, name: str) -> InstanceStatus:
+        """Get comprehensive instance health status"""
+```
+
+**Instance Status Monitoring**:
+- Kubernetes resource health checking
+- AWS resource provisioning status
+- Application deployment status
+- User activity and match statistics
+- Error detection and troubleshooting guidance
+
+### Git Integration Layer
+
+**Fork Management**:
+```python
+class GitManager:
+    """Manages Git repository operations and fork workflow"""
+    
+    def detect_repository_status(self) -> RepoStatus:
+        """Detect current repository status and fork relationship"""
+        
+    def initialize_fork(self, upstream_url: str) -> ForkResult:
+        """Initialize fork and setup remote configuration"""
+        
+    def sync_with_upstream(self) -> SyncResult:
+        """Sync fork with upstream repository"""
+        
+    def commit_and_push_deployment(self, instance: str, files: Dict[str, str]) -> CommitResult:
+        """Commit deployment files and push to fork"""
+```
+
+**Automated Deployment Publishing**:
+- Automatic commit creation for generated deployment files
+- Intelligent commit message generation with change summaries
+- Branch management for deployment updates
+- Conflict detection and resolution guidance
+- Deployment history tracking and rollback capabilities
+
+### AWS and Kubernetes Integration
+
+**AWS Client Integration**:
+```python
+class AWSClient:
+    """AWS operations and resource management"""
+    
+    def validate_credentials(self) -> CredentialStatus:
+        """Validate AWS credentials and permissions"""
+        
+    def check_resource_quotas(self, region: str) -> QuotaStatus:
+        """Check AWS service quotas and limits"""
+        
+    def monitor_resource_provisioning(self, resources: List[str]) -> ProvisioningStatus:
+        """Monitor Crossplane resource provisioning status"""
+```
+
+**Kubernetes Client Integration**:
+```python
+class KubernetesClient:
+    """Kubernetes cluster operations"""
+    
+    def validate_cluster_access(self) -> ClusterStatus:
+        """Validate cluster access and permissions"""
+        
+    def apply_manifests(self, manifests: Dict[str, str]) -> ApplyResult:
+        """Apply Kubernetes manifests with validation"""
+        
+    def monitor_deployment_status(self, namespace: str) -> DeploymentStatus:
+        """Monitor deployment progress and health"""
+```
+
+### Development Environment Integration
+
+**Development Automation**:
+```python
+class DevelopmentManager:
+    """Development environment automation"""
+    
+    def setup_development_environment(self) -> SetupResult:
+        """Complete development environment setup"""
+        
+    def manage_local_services(self, service: str, action: str) -> ServiceResult:
+        """Manage local development services (API, DynamoDB, etc.)"""
+        
+    def run_test_suites(self, test_type: str) -> TestResult:
+        """Execute comprehensive test suites"""
+        
+    def integrate_pre_commit_hooks(self) -> HookResult:
+        """Setup and manage pre-commit hooks"""
+```
+
+**Development Workflow**:
+- Automated virtual environment setup
+- Local service management (API server, DynamoDB Local)
+- Test execution with coverage reporting
+- Pre-commit hook integration and management
+- Development configuration validation
+
+### Infrastructure Management
+
+**Infrastructure Automation**:
+```python
+class InfrastructureManager:
+    """Infrastructure component management"""
+    
+    def setup_crossplane(self) -> SetupResult:
+        """Install and configure Crossplane with AWS provider"""
+        
+    def setup_argocd(self) -> SetupResult:
+        """Install and configure ArgoCD with repository connections"""
+        
+    def setup_monitoring(self) -> SetupResult:
+        """Install monitoring stack (Prometheus, Grafana)"""
+        
+    def check_infrastructure_health(self) -> HealthStatus:
+        """Comprehensive infrastructure health checking"""
+```
+
+### Error Handling and User Experience
+
+**Comprehensive Error Handling**:
+- Detailed error messages with context and suggestions
+- Recovery procedures for common failure scenarios
+- Validation errors with specific field-level feedback
+- Progress indicators for long-running operations
+- Rollback capabilities for failed operations
+
+**User Experience Features**:
+- Interactive configuration wizards with validation
+- Colored output with clear status indicators
+- Progress bars for deployment operations
+- Confirmation prompts for destructive operations
+- Help system with examples and usage guidance
+
+### Testing and Validation Framework
+
+**Testing Strategy**:
+```python
+class TestFramework:
+    """Comprehensive testing and validation"""
+    
+    def run_unit_tests(self) -> TestResult:
+        """Execute unit tests for all modules"""
+        
+    def run_integration_tests(self) -> TestResult:
+        """Execute integration tests for workflows"""
+        
+    def validate_end_to_end_workflows(self) -> ValidationResult:
+        """Validate complete deployment workflows"""
+        
+    def run_performance_tests(self) -> PerformanceResult:
+        """Execute performance and load tests"""
+```
+
+**Validation Capabilities**:
+- Configuration schema validation with detailed error reporting
+- Deployment file validation before application
+- Resource conflict detection and resolution
+- Workflow state validation and recovery procedures
+- Performance testing for large-scale deployments

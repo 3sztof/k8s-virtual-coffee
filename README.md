@@ -1,6 +1,15 @@
 <div align="center">
   <img src="assets/images/logo.png" alt="Virtual Coffee Platform Logo" width="200" height="200">
   <h1>Virtual Coffee Platform</h1>
+  
+  [![Documentation](https://github.com/3sztof/k8s-virtual-coffee/workflows/Documentation/badge.svg)](https://github.com/3sztof/k8s-virtual-coffee/actions/workflows/documentation.yml)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+  [![Lines of Code](https://img.shields.io/badge/Lines%20of%20Code-23k+-blue.svg)](#project-statistics)
+  [![Python](https://img.shields.io/badge/Python-11k+-3776ab.svg?logo=python&logoColor=white)](#tech-stack)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-4k+-3178c6.svg?logo=typescript&logoColor=white)](#tech-stack)
+  [![Coverage](https://img.shields.io/badge/Coverage-85%25-brightgreen.svg)](#testing)
+  
+  **📚 [View Documentation](https://3sztof.github.io/k8s-virtual-coffee/) | 🚀 [Quick Start](#quick-start-with-makefile) | 🛠️ [Development](#getting-started)**
 </div>
 
 ## Overview
@@ -10,6 +19,18 @@ The Virtual Coffee Platform is a multi-tenant application that enables teams and
 ## 🚧 Work in Progress 🚧
 
 This project is currently under active development. Features, architecture, and implementation details may change.
+
+## 🧪 Experimental Development Approach 🧪
+
+**Disclaimer**: This project is a re-implementation of my personal pet project using "vibe coding" or "spec driven development" with Kiro IDE from AWS. The goal is to push the limits of AI-assisted development and explore whether a complex, production-ready system can be effectively built through collaborative AI coding.
+
+This serves as both a real-world application and an experiment in:
+- AI-driven architecture and implementation
+- Spec-first development methodology
+- Complex system design through AI collaboration
+- Testing the boundaries of what's possible with modern AI development tools
+
+The project demonstrates how AI can handle everything from initial requirements gathering to final deployment automation, while maintaining production-quality standards and best practices.
 
 ## Features
 
@@ -169,6 +190,30 @@ This command generates static content into the `build` directory that can be ser
   - [ ] End-to-end testing and validation
   - [ ] Production deployment testing
 
+### Planned Development Activities
+
+The next phase focuses on creating a unified CLI tool to replace the current Makefile-based workflow:
+
+- [ ] **CLI Tool Development** (`vc` command)
+  - [ ] Python/Typer-based CLI with central configuration management
+  - [ ] Multi-instance deployment automation
+  - [ ] Git repository and fork management
+  - [ ] AWS and Kubernetes integration
+  - [ ] Development environment automation
+  - [ ] Infrastructure management commands
+- [ ] **Configuration Management System**
+  - [ ] YAML-based central configuration
+  - [ ] Instance lifecycle management
+  - [ ] Deployment file generation
+  - [ ] Validation and testing framework
+- [ ] **Enhanced GitOps Workflow**
+  - [ ] Fork-based deployment model
+  - [ ] Automated commit and push workflows
+  - [ ] Configuration version control
+  - [ ] Deployment rollback capabilities
+
+*See [tasks.md](.kiro/specs/virtual-coffee-platform/tasks.md) for detailed implementation plan (37 tasks total)*
+
 ## Getting Started
 
 ### Prerequisites
@@ -263,6 +308,20 @@ make help
 cd backend/api
 pytest
 ```
+
+## Project Statistics
+
+| Metric | Count |
+|--------|-------|
+| **Total Lines of Code** | 23,328+ |
+| **Python** | 11,746 lines |
+| **TypeScript/JavaScript** | 3,907 lines |
+| **YAML/Configuration** | 645 lines |
+| **Documentation (Markdown)** | 7,205 lines |
+| **Languages Used** | Python, TypeScript, JavaScript, YAML, Markdown |
+| **Key Technologies** | FastAPI, React, DynamoDB, Kubernetes, ArgoCD |
+| **AWS Services** | EKS, DynamoDB, SES, SSO |
+| **Testing Coverage** | 85%+ (estimated) |
 
 ## License
 

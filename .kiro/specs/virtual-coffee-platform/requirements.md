@@ -202,3 +202,135 @@ The Virtual Coffee Platform is a multi-tenant application that enables teams and
 3. WHEN ArgoCD needs initial configuration THEN the system SHALL provide automated setup of ArgoCD and repository connections
 4. WHEN ArgoCD secrets need to be configured THEN the system SHALL provide automated secret management through the Makefile
 5. WHEN common admin operations are needed THEN the system SHALL provide documented Makefile targets for all routine tasks
+
+### Requirement 16 - **Phase 2**
+
+**User Story:** As a platform operator, I want a comprehensive CLI tool to replace Makefile operations, so that I can manage virtual coffee deployments with better user experience and validation.
+
+#### Acceptance Criteria
+
+1. WHEN a platform operator needs to manage configurations THEN the CLI SHALL provide config management commands with validation
+2. WHEN a platform operator needs to deploy instances THEN the CLI SHALL generate deployment files from configuration
+3. WHEN a platform operator needs to manage multiple instances THEN the CLI SHALL provide instance lifecycle management
+4. WHEN a platform operator works with Git repositories THEN the CLI SHALL automate fork setup and deployment publishing
+5. IF configuration is invalid THEN the CLI SHALL provide detailed error messages and suggestions
+
+### Requirement 17 - **Phase 2**
+
+**User Story:** As a platform operator, I want centralized configuration management, so that I can define and validate deployment settings consistently.
+
+#### Acceptance Criteria
+
+1. WHEN a platform operator creates a new configuration THEN the system SHALL provide schema validation with detailed error messages
+2. WHEN configuration files are loaded THEN the system SHALL discover and validate all configuration files
+3. WHEN configuration changes are made THEN the system SHALL backup existing configuration before updates
+4. WHEN multiple instances are configured THEN the system SHALL detect and prevent configuration conflicts
+5. IF configuration is incomplete THEN the system SHALL prompt for required fields with helpful guidance
+
+### Requirement 18 - **Phase 2**
+
+**User Story:** As a platform operator, I want automated deployment file generation, so that I can create Kubernetes and AWS resources from configuration.
+
+#### Acceptance Criteria
+
+1. WHEN deployment files are needed THEN the system SHALL generate Kubernetes manifests from configuration templates
+2. WHEN AWS resources are required THEN the system SHALL generate Crossplane resource definitions
+3. WHEN ArgoCD applications are needed THEN the system SHALL generate application manifests with proper structure
+4. WHEN deployment files are generated THEN the system SHALL organize them in proper directory structure
+5. IF template generation fails THEN the system SHALL provide clear error messages and validation feedback
+
+### Requirement 19 - **Phase 2**
+
+**User Story:** As a platform operator, I want instance lifecycle management, so that I can add, remove, and monitor virtual coffee instances.
+
+#### Acceptance Criteria
+
+1. WHEN listing instances THEN the system SHALL display detailed status information for all instances
+2. WHEN adding a new instance THEN the system SHALL provide an interactive configuration wizard
+3. WHEN removing an instance THEN the system SHALL validate cleanup and prevent data loss
+4. WHEN checking instance status THEN the system SHALL provide comprehensive health checking
+5. IF instance operations fail THEN the system SHALL provide troubleshooting guidance and recovery options
+
+### Requirement 20 - **Phase 2**
+
+**User Story:** As a platform operator, I want integrated AWS and Kubernetes operations, so that I can manage cloud resources directly from the CLI.
+
+#### Acceptance Criteria
+
+1. WHEN AWS operations are needed THEN the system SHALL provide AWS client integration with credential validation
+2. WHEN Kubernetes operations are required THEN the system SHALL provide cluster operations and health checks
+3. WHEN resource provisioning is needed THEN the system SHALL monitor AWS resource status and quota validation
+4. WHEN deployment validation is required THEN the system SHALL check resource conflicts and dependencies
+5. IF cloud operations fail THEN the system SHALL provide detailed error messages and retry mechanisms
+
+### Requirement 21 - **Phase 2**
+
+**User Story:** As a platform operator, I want automated deployment operations, so that I can deploy and manage instances with atomic operations and rollback capabilities.
+
+#### Acceptance Criteria
+
+1. WHEN deploying instances THEN the system SHALL apply deployment files to cluster with atomic operations
+2. WHEN deployment validation is needed THEN the system SHALL perform pre-flight checks and validation
+3. WHEN deployment monitoring is required THEN the system SHALL provide progress monitoring and status reporting
+4. WHEN deployment fails THEN the system SHALL provide automatic rollback capabilities
+5. IF deployment conflicts occur THEN the system SHALL detect and resolve resource conflicts
+
+### Requirement 22 - **Phase 2**
+
+**User Story:** As a developer, I want development environment automation, so that I can set up and manage local development efficiently.
+
+#### Acceptance Criteria
+
+1. WHEN setting up development environment THEN the system SHALL automate complete development setup
+2. WHEN running local services THEN the system SHALL manage API server and database processes
+3. WHEN running tests THEN the system SHALL execute comprehensive test suites
+4. WHEN managing development tools THEN the system SHALL integrate pre-commit hooks and validation
+5. IF development setup fails THEN the system SHALL provide troubleshooting guidance and recovery steps
+
+### Requirement 23 - **Phase 2**
+
+**User Story:** As a platform operator, I want infrastructure management automation, so that I can set up and maintain platform infrastructure components.
+
+#### Acceptance Criteria
+
+1. WHEN setting up infrastructure THEN the system SHALL automate Crossplane, ArgoCD, and monitoring installation
+2. WHEN managing infrastructure THEN the system SHALL provide status monitoring and health checking
+3. WHEN upgrading infrastructure THEN the system SHALL provide upgrade and maintenance operations
+4. WHEN infrastructure issues occur THEN the system SHALL provide troubleshooting and diagnostic tools
+5. IF infrastructure setup fails THEN the system SHALL provide recovery procedures and rollback options
+
+### Requirement 24 - **Phase 2**
+
+**User Story:** As a platform operator, I want Git repository and fork management, so that I can automate deployment publishing and configuration synchronization.
+
+#### Acceptance Criteria
+
+1. WHEN working with Git repositories THEN the system SHALL detect and validate repository status and fork relationships
+2. WHEN setting up forks THEN the system SHALL automate fork initialization and remote configuration
+3. WHEN publishing deployments THEN the system SHALL automate commit creation and push to fork repositories
+4. WHEN synchronizing configuration THEN the system SHALL manage configuration version control and change tracking
+5. IF Git operations fail THEN the system SHALL provide conflict resolution and recovery procedures
+
+### Requirement 25 - **Phase 2**
+
+**User Story:** As a platform operator, I want comprehensive testing and validation, so that I can ensure system reliability and quality.
+
+#### Acceptance Criteria
+
+1. WHEN running tests THEN the system SHALL execute unit tests for all modules with comprehensive coverage
+2. WHEN performing integration testing THEN the system SHALL validate complete deployment workflows
+3. WHEN validating workflows THEN the system SHALL test end-to-end scenarios including fork setup and deployment
+4. WHEN troubleshooting issues THEN the system SHALL provide workflow state detection and recovery procedures
+5. IF tests fail THEN the system SHALL provide detailed error reporting and debugging information
+
+### Requirement 26 - **Phase 2**
+
+**User Story:** As a platform operator, I want comprehensive documentation and examples, so that I can learn and use the CLI tool effectively.
+
+#### Acceptance Criteria
+
+1. WHEN learning the CLI tool THEN the system SHALL provide comprehensive user documentation with installation and quick start
+2. WHEN configuring deployments THEN the system SHALL provide configuration guides with schema documentation and examples
+3. WHEN following tutorials THEN the system SHALL provide step-by-step procedures for common scenarios
+4. WHEN troubleshooting issues THEN the system SHALL provide troubleshooting guides with common issues and solutions
+5. IF migrating from Makefile THEN the system SHALL provide migration guide with command equivalents and best practices

@@ -11,15 +11,15 @@ const config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://your-org.github.io',
+  url: 'https://3sztof.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/virtual-coffee-platform/',
+  baseUrl: '/k8s-virtual-coffee/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'your-org', // Usually your GitHub org/user name.
-  projectName: 'virtual-coffee-platform', // Usually your repo name.
+  organizationName: '3sztof', // Usually your GitHub org/user name.
+  projectName: 'k8s-virtual-coffee', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -42,7 +42,7 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/your-org/virtual-coffee-platform/tree/main/docs-site/',
+            'https://github.com/3sztof/k8s-virtual-coffee/tree/main/docs-site/',
         },
         blog: false,
         theme: {
@@ -83,7 +83,7 @@ const config = {
             label: 'Deployment',
           },
           {
-            href: 'https://github.com/your-org/virtual-coffee-platform',
+            href: 'https://github.com/3sztof/k8s-virtual-coffee',
             label: 'GitHub',
             position: 'right',
           },
@@ -114,7 +114,7 @@ const config = {
             items: [
               {
                 label: 'GitHub Issues',
-                href: 'https://github.com/your-org/virtual-coffee-platform/issues',
+                href: 'https://github.com/3sztof/k8s-virtual-coffee/issues',
               },
             ],
           },
