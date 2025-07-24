@@ -5,16 +5,16 @@
     "context": ".."
   },
   "runArgs": ["--init"],
-  
+
   // Forward ports for development - COMMENTED OUT
   // "forwardPorts": [
   //   8000,  // DynamoDB Local
   //   8001   // FastAPI backend
   // ],
-  
+
   // Install dependencies on container creation - COMMENTED OUT
   // "postCreateCommand": "uv pip install -e '.[dev]' && cd frontend && npm install",
-  
+
   // Configure VS Code settings and extensions - MINIMAL VERSION
   "customizations": {
     "vscode": {
@@ -26,10 +26,10 @@
       }
     }
   },
-  
+
   // Set the remote user
   "remoteUser": "vscode"
-  
+
   // Docker socket mount - COMMENTED OUT
   // "mounts": [
   //   "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"

@@ -1,10 +1,11 @@
-import pytest
 from datetime import datetime
+
+import pytest
 from pydantic import ValidationError
 
-from models.user import User, Preferences, UserCreate, UserUpdate
+from models.config import ConfigUpdate, DeploymentConfig, EmailTemplates
 from models.match import Match, MatchCreate, MatchUpdate
-from models.config import DeploymentConfig, EmailTemplates, ConfigUpdate
+from models.user import Preferences, User, UserCreate, UserUpdate
 
 
 class TestUserModels:
@@ -12,7 +13,7 @@ class TestUserModels:
         user = User(
             email="test@example.com",
             name="Test User",
-            deployment_id="test-team"
+            deployment_id="test-team",
         )
         assert user.email == "test@example.com"
         assert user.name == "Test User"
@@ -25,13 +26,13 @@ class TestUserModels:
         preferences = Preferences(
             availability=["Monday 9-10", "Wednesday 14-15"],
             topics=["Technology", "Coffee"],
-            meeting_length=45
+            meeting_length=45,
         )
         user = User(
             email="test@example.com",
             name="Test User",
             deployment_id="test-team",
-            preferences=preferences
+            preferences=preferences,
         )
         assert user.preferences.availability == ["Monday 9-10", "Wednesday 14-15"]
         assert user.preferences.topics == ["Technology", "Coffee"]
@@ -42,13 +43,13 @@ class TestUserModels:
             User(
                 email="test@example.com",
                 name="",  # Empty name should fail validation
-                deployment_id="test-team"
+                deployment_id="test-team",
             )
 
     def test_user_create_schema(self):
         user_data = UserCreate(
             email="new@example.com",
-            name="New User"
+            name="New User",
         )
         assert user_data.email == "new@example.com"
         assert user_data.name == "New User"
@@ -57,7 +58,7 @@ class TestUserModels:
     def test_user_update_schema(self):
         update_data = UserUpdate(
             name="Updated Name",
-            is_paused=True
+            is_paused=True,
         )
         assert update_data.name == "Updated Name"
         assert update_data.is_paused is True
@@ -69,7 +70,7 @@ class TestMatchModels:
         match = Match(
             deployment_id="test-team",
             participants=["user-1", "user-2"],
-            scheduled_date=datetime.utcnow()
+            scheduled_date=datetime.utcnow(),
         )
         assert match.deployment_id == "test-team"
         assert match.participants == ["user-1", "user-2"]
@@ -81,7 +82,7 @@ class TestMatchModels:
             Match(
                 deployment_id="test-team",
                 participants=["user-1"],  # Only one participant should fail
-                scheduled_date=datetime.utcnow()
+                scheduled_date=datetime.utcnow(),
             )
 
     def test_match_status_validation(self):
@@ -90,20 +91,20 @@ class TestMatchModels:
                 deployment_id="test-team",
                 participants=["user-1", "user-2"],
                 scheduled_date=datetime.utcnow(),
-                status="invalid-status"  # Invalid status should fail
+                status="invalid-status",  # Invalid status should fail
             )
 
     def test_match_create_schema(self):
         match_data = MatchCreate(
             participants=["user-1", "user-2"],
-            scheduled_date=datetime.utcnow()
+            scheduled_date=datetime.utcnow(),
         )
         assert match_data.participants == ["user-1", "user-2"]
 
     def test_match_update_schema(self):
         update_data = MatchUpdate(
             status="confirmed",
-            notification_sent=True
+            notification_sent=True,
         )
         assert update_data.status == "confirmed"
         assert update_data.notification_sent is True
@@ -114,7 +115,7 @@ class TestConfigModels:
     def test_config_creation(self):
         config = DeploymentConfig(
             deployment_id="test-team",
-            schedule="0 9 * * 1"  # Every Monday at 9 AM
+            schedule="0 9 * * 1",  # Every Monday at 9 AM
         )
         assert config.deployment_id == "test-team"
         assert config.schedule == "0 9 * * 1"
@@ -125,7 +126,7 @@ class TestConfigModels:
     def test_config_with_custom_values(self):
         templates = EmailTemplates(
             match_notification="Custom match notification",
-            reminder="Custom reminder"
+            reminder="Custom reminder",
         )
         config = DeploymentConfig(
             deployment_id="test-team",
@@ -133,7 +134,7 @@ class TestConfigModels:
             timezone="Europe/London",
             meeting_size=3,
             admin_emails=["admin@example.com"],
-            email_templates=templates
+            email_templates=templates,
         )
         assert config.timezone == "Europe/London"
         assert config.meeting_size == 3
@@ -144,7 +145,7 @@ class TestConfigModels:
         with pytest.raises(ValidationError):
             DeploymentConfig(
                 deployment_id="test-team",
-                schedule="invalid-cron"  # Invalid cron expression should fail
+                schedule="invalid-cron",  # Invalid cron expression should fail
             )
 
     def test_config_meeting_size_validation(self):
@@ -152,20 +153,20 @@ class TestConfigModels:
             DeploymentConfig(
                 deployment_id="test-team",
                 schedule="0 9 * * 1",
-                meeting_size=1  # Meeting size < 2 should fail
+                meeting_size=1,  # Meeting size < 2 should fail
             )
 
         with pytest.raises(ValidationError):
             DeploymentConfig(
                 deployment_id="test-team",
                 schedule="0 9 * * 1",
-                meeting_size=11  # Meeting size > 10 should fail
+                meeting_size=11,  # Meeting size > 10 should fail
             )
 
     def test_config_update_schema(self):
         update_data = ConfigUpdate(
             schedule="0 15 * * 5",
-            meeting_size=4
+            meeting_size=4,
         )
         assert update_data.schedule == "0 15 * * 5"
         assert update_data.meeting_size == 4

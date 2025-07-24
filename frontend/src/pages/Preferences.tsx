@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Container, 
-  Header, 
-  SpaceBetween, 
+import {
+  Container,
+  Header,
+  SpaceBetween,
   Box,
   Alert,
   Form,
@@ -67,12 +67,12 @@ const Preferences: React.FC = () => {
   const { addNotification } = useNotifications();
   const [activeTabId, setActiveTabId] = useState('meeting');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   // Meeting preferences
   const [selectedTopics, setSelectedTopics] = useState<MultiselectProps.Option[]>([]);
   const [selectedAvailability, setSelectedAvailability] = useState<MultiselectProps.Option[]>([]);
   const [selectedMeetingLength, setSelectedMeetingLength] = useState<SelectProps.Option | null>(null);
-  
+
   // Notification preferences
   const [emailEnabled, setEmailEnabled] = useState(true);
   const [slackEnabled, setSlackEnabled] = useState(false);
@@ -82,7 +82,7 @@ const Preferences: React.FC = () => {
   const [signalEnabled, setSignalEnabled] = useState(false);
   const [signalNumber, setSignalNumber] = useState('');
   const [primaryChannel, setPrimaryChannel] = useState<SelectProps.Option | null>(null);
-  
+
   // Initialize form values from user data
   useEffect(() => {
     if (user?.preferences) {
@@ -92,21 +92,21 @@ const Preferences: React.FC = () => {
         return option || { label: topic, value: topic };
       });
       setSelectedTopics(topics);
-      
+
       // Set availability
       const availability = user.preferences.availability.map(avail => {
         const option = AVAILABILITY_OPTIONS.find(opt => opt.value === avail);
         return option || { label: avail, value: avail };
       });
       setSelectedAvailability(availability);
-      
+
       // Set meeting length
       const meetingLength = MEETING_LENGTH_OPTIONS.find(
         opt => opt.value === user.preferences.meeting_length.toString()
       );
       setSelectedMeetingLength(meetingLength || null);
     }
-    
+
     if (user?.notification_prefs) {
       setEmailEnabled(user.notification_prefs.email);
       setSlackEnabled(user.notification_prefs.slack);
@@ -115,7 +115,7 @@ const Preferences: React.FC = () => {
       setTelegramChatId(user.notification_prefs.telegram_chat_id || '');
       setSignalEnabled(user.notification_prefs.signal);
       setSignalNumber(user.notification_prefs.signal_number || '');
-      
+
       // Set primary channel
       const primaryChannelOption = [
         { label: 'Email', value: 'email' },
@@ -123,22 +123,22 @@ const Preferences: React.FC = () => {
         { label: 'Telegram', value: 'telegram' },
         { label: 'Signal', value: 'signal' }
       ].find(opt => opt.value === user.notification_prefs.primary_channel);
-      
+
       setPrimaryChannel(primaryChannelOption || { label: 'Email', value: 'email' });
     }
   }, [user]);
-  
+
   // Handle meeting preferences submission
   const handleMeetingPreferencesSubmit = async () => {
     try {
       setIsSubmitting(true);
-      
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // Refresh user data
       await refreshUser();
-      
+
       // Show success notification
       addNotification({
         type: 'success',
@@ -159,18 +159,18 @@ const Preferences: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-  
+
   // Handle notification preferences submission
   const handleNotificationPreferencesSubmit = async () => {
     try {
       setIsSubmitting(true);
-      
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // Refresh user data
       await refreshUser();
-      
+
       // Show success notification
       addNotification({
         type: 'success',
@@ -191,7 +191,7 @@ const Preferences: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-  
+
   return (
     <Container
       header={
@@ -237,7 +237,7 @@ const Preferences: React.FC = () => {
                         deselectAriaLabel={option => `Remove ${option.label}`}
                       />
                     </FormField>
-                    
+
                     <FormField
                       label="Availability"
                       description="Select times when you're available for coffee meetings"
@@ -251,7 +251,7 @@ const Preferences: React.FC = () => {
                         deselectAriaLabel={option => `Remove ${option.label}`}
                       />
                     </FormField>
-                    
+
                     <FormField
                       label="Preferred meeting length"
                       description="Select your preferred meeting duration"
@@ -289,7 +289,7 @@ const Preferences: React.FC = () => {
                     >
                       You can enable multiple notification channels. Your primary channel will be used first, with others as fallbacks.
                     </Alert>
-                    
+
                     <FormField
                       label="Primary notification channel"
                       description="Select your preferred notification method"
@@ -306,7 +306,7 @@ const Preferences: React.FC = () => {
                         placeholder="Select primary channel"
                       />
                     </FormField>
-                    
+
                     <ColumnLayout columns={1}>
                       <FormField
                         label="Email notifications"
@@ -319,7 +319,7 @@ const Preferences: React.FC = () => {
                           {emailEnabled ? 'Enabled' : 'Disabled'}
                         </Toggle>
                       </FormField>
-                      
+
                       <SpaceBetween size="l">
                         <FormField
                           label="Slack notifications"
@@ -337,7 +337,7 @@ const Preferences: React.FC = () => {
                             {slackEnabled ? 'Enabled' : 'Disabled'}
                           </Toggle>
                         </FormField>
-                        
+
                         {slackEnabled && (
                           <FormField
                             label="Slack webhook URL"
@@ -351,7 +351,7 @@ const Preferences: React.FC = () => {
                           </FormField>
                         )}
                       </SpaceBetween>
-                      
+
                       <SpaceBetween size="l">
                         <FormField
                           label="Telegram notifications"
@@ -369,7 +369,7 @@ const Preferences: React.FC = () => {
                             {telegramEnabled ? 'Enabled' : 'Disabled'}
                           </Toggle>
                         </FormField>
-                        
+
                         {telegramEnabled && (
                           <FormField
                             label="Telegram chat ID"
@@ -382,7 +382,7 @@ const Preferences: React.FC = () => {
                           </FormField>
                         )}
                       </SpaceBetween>
-                      
+
                       <SpaceBetween size="l">
                         <FormField
                           label="Signal notifications"
@@ -400,7 +400,7 @@ const Preferences: React.FC = () => {
                             {signalEnabled ? 'Enabled' : 'Disabled'}
                           </Toggle>
                         </FormField>
-                        
+
                         {signalEnabled && (
                           <FormField
                             label="Signal phone number"

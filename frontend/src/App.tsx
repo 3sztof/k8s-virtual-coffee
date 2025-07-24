@@ -15,7 +15,7 @@ const App: React.FC = () => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // Handle redirect after successful authentication
   useEffect(() => {
     if (isAuthenticated && location.pathname === '/login') {
@@ -25,7 +25,7 @@ const App: React.FC = () => {
       navigate(redirectPath, { replace: true });
     }
   }, [isAuthenticated, navigate, location.pathname]);
-  
+
   return (
     <NotificationProvider>
       <Routes>

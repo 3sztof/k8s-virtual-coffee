@@ -38,7 +38,7 @@ spec:
           toFieldPath: spec.forProvider.provisionedThroughput.readCapacityUnits
         - fromFieldPath: spec.parameters.writeCapacity
           toFieldPath: spec.forProvider.provisionedThroughput.writeCapacityUnits
-    
+
     - name: dynamodb-table-matches
       base:
         apiVersion: dynamodb.aws.crossplane.io/v1alpha1
@@ -67,7 +67,7 @@ spec:
           toFieldPath: spec.forProvider.provisionedThroughput.readCapacityUnits
         - fromFieldPath: spec.parameters.writeCapacity
           toFieldPath: spec.forProvider.provisionedThroughput.writeCapacityUnits
-    
+
     - name: dynamodb-table-config
       base:
         apiVersion: dynamodb.aws.crossplane.io/v1alpha1

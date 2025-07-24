@@ -1,8 +1,8 @@
 import React from 'react';
-import { 
-  Container, 
-  Header, 
-  SpaceBetween, 
+import {
+  Container,
+  Header,
+  SpaceBetween,
   Button,
   Box,
   Alert
@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 const NotFound: React.FC = () => {
   const navigate = useNavigate();
-  
+
   return (
     <div className="not-found-container">
       <Container
@@ -30,11 +30,11 @@ const NotFound: React.FC = () => {
           >
             The page you are looking for does not exist.
           </Alert>
-          
+
           <Box variant="p">
             Please check the URL or navigate back to the dashboard.
           </Box>
-          
+
           <Button
             onClick={() => navigate('/')}
           >

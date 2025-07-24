@@ -1,18 +1,19 @@
 """Tests for authentication functionality."""
-import pytest
 from datetime import datetime, timedelta
+
+import pytest
 from fastapi import HTTPException
 from jose import jwt
 
 from backend.api.auth.jwt import (
+    ALGORITHM,
+    SECRET_KEY,
+    TokenPayload,
     create_access_token,
     create_refresh_token,
     create_tokens,
     decode_token,
     refresh_access_token,
-    TokenPayload,
-    SECRET_KEY,
-    ALGORITHM
 )
 
 
@@ -22,16 +23,16 @@ def test_create_access_token():
     user_id = "test-user-id"
     email = "test@example.com"
     deployment_id = "test-deployment"
-    
+
     payload = TokenPayload(
         sub=user_id,
         email=email,
-        deployment_id=deployment_id
+        deployment_id=deployment_id,
     )
-    
+
     # Act
     token = create_access_token(payload)
-    
+
     # Assert
     decoded = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     assert decoded["sub"] == user_id
@@ -47,16 +48,16 @@ def test_create_refresh_token():
     user_id = "test-user-id"
     email = "test@example.com"
     deployment_id = "test-deployment"
-    
+
     payload = TokenPayload(
         sub=user_id,
         email=email,
-        deployment_id=deployment_id
+        deployment_id=deployment_id,
     )
-    
+
     # Act
     token = create_refresh_token(payload)
-    
+
     # Assert
     decoded = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     assert decoded["sub"] == user_id
@@ -64,7 +65,7 @@ def test_create_refresh_token():
     assert decoded["deployment_id"] == deployment_id
     assert decoded["token_type"] == "refresh"
     assert "exp" in decoded
-    
+
     # Verify refresh token has longer expiration than access token
     refresh_exp = datetime.fromtimestamp(decoded["exp"])
     now = datetime.utcnow()
@@ -77,24 +78,26 @@ def test_create_tokens():
     user_id = "test-user-id"
     email = "test@example.com"
     deployment_id = "test-deployment"
-    
+
     # Act
     tokens = create_tokens(user_id, email, deployment_id)
-    
+
     # Assert
     assert tokens.token_type == "bearer"
     assert tokens.access_token is not None
     assert tokens.refresh_token is not None
-    
+
     # Verify access token
     access_decoded = jwt.decode(tokens.access_token, SECRET_KEY, algorithms=[ALGORITHM])
     assert access_decoded["sub"] == user_id
     assert access_decoded["email"] == email
     assert access_decoded["deployment_id"] == deployment_id
     assert access_decoded["token_type"] == "access"
-    
+
     # Verify refresh token
-    refresh_decoded = jwt.decode(tokens.refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
+    refresh_decoded = jwt.decode(
+        tokens.refresh_token, SECRET_KEY, algorithms=[ALGORITHM]
+    )
     assert refresh_decoded["sub"] == user_id
     assert refresh_decoded["email"] == email
     assert refresh_decoded["deployment_id"] == deployment_id
@@ -107,18 +110,18 @@ def test_decode_token_valid():
     user_id = "test-user-id"
     email = "test@example.com"
     deployment_id = "test-deployment"
-    
+
     payload = TokenPayload(
         sub=user_id,
         email=email,
-        deployment_id=deployment_id
+        deployment_id=deployment_id,
     )
-    
+
     token = create_access_token(payload)
-    
+
     # Act
     token_data = decode_token(token)
-    
+
     # Assert
     assert token_data.sub == user_id
     assert token_data.email == email
@@ -131,11 +134,11 @@ def test_decode_token_invalid():
     """Test decoding an invalid token."""
     # Arrange
     invalid_token = "invalid.token.string"
-    
+
     # Act & Assert
     with pytest.raises(HTTPException) as excinfo:
         decode_token(invalid_token)
-    
+
     assert excinfo.value.status_code == 401
     assert "Could not validate credentials" in excinfo.value.detail
 
@@ -147,14 +150,14 @@ def test_decode_token_missing_fields():
     payload = {
         "sub": "test-user-id",
         # Missing email and deployment_id
-        "exp": datetime.utcnow() + timedelta(minutes=15)
+        "exp": datetime.utcnow() + timedelta(minutes=15),
     }
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-    
+
     # Act & Assert
     with pytest.raises(HTTPException) as excinfo:
         decode_token(token)
-    
+
     assert excinfo.value.status_code == 401
     assert "Invalid token payload" in excinfo.value.detail
 
@@ -165,30 +168,32 @@ def test_refresh_access_token_valid():
     user_id = "test-user-id"
     email = "test@example.com"
     deployment_id = "test-deployment"
-    
+
     # Create a refresh token
     payload = TokenPayload(
         sub=user_id,
         email=email,
         deployment_id=deployment_id,
-        token_type="refresh"  # Explicitly set as refresh token
+        token_type="refresh",  # Explicitly set as refresh token
     )
-    
+
     to_encode = payload.dict()
     expire = datetime.utcnow() + timedelta(days=7)
     to_encode.update({"exp": expire})
     refresh_token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    
+
     # Act
     new_tokens = refresh_access_token(refresh_token)
-    
+
     # Assert
     assert new_tokens.token_type == "bearer"
     assert new_tokens.refresh_token == refresh_token  # Same refresh token
     assert new_tokens.access_token != refresh_token  # New access token
-    
+
     # Verify new access token
-    access_decoded = jwt.decode(new_tokens.access_token, SECRET_KEY, algorithms=[ALGORITHM])
+    access_decoded = jwt.decode(
+        new_tokens.access_token, SECRET_KEY, algorithms=[ALGORITHM]
+    )
     assert access_decoded["sub"] == user_id
     assert access_decoded["email"] == email
     assert access_decoded["deployment_id"] == deployment_id
@@ -201,19 +206,19 @@ def test_refresh_access_token_with_access_token():
     user_id = "test-user-id"
     email = "test@example.com"
     deployment_id = "test-deployment"
-    
+
     payload = TokenPayload(
         sub=user_id,
         email=email,
-        deployment_id=deployment_id
+        deployment_id=deployment_id,
     )
-    
+
     access_token = create_access_token(payload)  # This is an access token, not refresh
-    
+
     # Act & Assert
     with pytest.raises(HTTPException) as excinfo:
         refresh_access_token(access_token)
-    
+
     assert excinfo.value.status_code == 401
     assert "Invalid token type for refresh operation" in excinfo.value.detail
 
@@ -224,20 +229,20 @@ def test_refresh_access_token_expired():
     user_id = "test-user-id"
     email = "test@example.com"
     deployment_id = "test-deployment"
-    
+
     # Create an expired refresh token
     payload = {
         "sub": user_id,
         "email": email,
         "deployment_id": deployment_id,
         "token_type": "refresh",
-        "exp": datetime.utcnow() - timedelta(days=1)  # Expired 1 day ago
+        "exp": datetime.utcnow() - timedelta(days=1),  # Expired 1 day ago
     }
-    
+
     expired_token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-    
+
     # Act & Assert
     with pytest.raises(HTTPException) as excinfo:
         refresh_access_token(expired_token)
-    
+
     assert excinfo.value.status_code == 401

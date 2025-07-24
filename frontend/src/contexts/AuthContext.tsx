@@ -51,7 +51,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Check if user is authenticated on mount
   useEffect(() => {
     const checkAuth = async () => {
@@ -60,7 +60,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const response = await axios.get(`${API_URL}/auth/me`, {
           withCredentials: true
         });
-        
+
         if (response.data) {
           setUser(response.data);
         } else {
@@ -73,22 +73,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setLoading(false);
       }
     };
-    
+
     checkAuth();
   }, []);
-  
+
   // Login function
   const login = (provider: string) => {
     setLoading(true);
     setError(null);
-    
+
     // Store current path for redirect after login
     localStorage.setItem('auth_redirect', window.location.pathname);
-    
+
     // Redirect to auth endpoint
     window.location.href = `${API_URL}/auth/${provider}/login`;
   };
-  
+
   // Logout function
   const logout = async () => {
     try {
@@ -104,7 +104,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setLoading(false);
     }
   };
-  
+
   // Refresh user data
   const refreshUser = async () => {
     try {
@@ -112,7 +112,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await axios.get(`${API_URL}/auth/me`, {
         withCredentials: true
       });
-      
+
       if (response.data) {
         setUser(response.data);
       }
@@ -122,12 +122,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setLoading(false);
     }
   };
-  
+
   // Clear error
   const clearError = () => {
     setError(null);
   };
-  
+
   // For development/demo purposes, always simulate a logged-in user
   useEffect(() => {
     // Using a demo user for development
@@ -149,11 +149,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         primary_channel: 'email'
       }
     };
-    
+
     setUser(demoUser);
     setLoading(false);
   }, []);
-  
+
   return (
     <AuthContext.Provider
       value={{

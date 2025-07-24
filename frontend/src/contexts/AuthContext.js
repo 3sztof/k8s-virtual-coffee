@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   // For development/demo purposes, always simulate a logged-in user
   useEffect(() => {
     // Using a demo user for development
@@ -30,19 +30,19 @@ export const AuthProvider = ({ children }) => {
         primary_channel: 'email'
       }
     };
-    
+
     setUser(demoUser);
     setLoading(false);
   }, []);
-  
+
   // Login function
   const login = (provider) => {
     setLoading(true);
     setError(null);
-    
+
     // Store current path for redirect after login
     localStorage.setItem('auth_redirect', window.location.pathname);
-    
+
     // For demo, just set the user directly
     setTimeout(() => {
       setUser({
@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }, 1000);
   };
-  
+
   // Logout function
   const logout = async () => {
     try {
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   };
-  
+
   // Refresh user data
   const refreshUser = async () => {
     try {
@@ -98,12 +98,12 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   };
-  
+
   // Clear error
   const clearError = () => {
     setError(null);
   };
-  
+
   return (
     <AuthContext.Provider
       value={{

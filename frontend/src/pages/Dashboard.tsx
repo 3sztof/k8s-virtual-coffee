@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Container, 
-  Header, 
-  SpaceBetween, 
-  Box, 
+import {
+  Container,
+  Header,
+  SpaceBetween,
+  Box,
   ColumnLayout,
   Cards,
   CardsProps,
@@ -65,30 +65,30 @@ interface Match {
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const { addNotification } = useNotifications();
-  
+
   // Current match state
   const [currentMatch, setCurrentMatch] = useState<Match | null>(null);
   const [isLoadingCurrent, setIsLoadingCurrent] = useState(true);
-  
+
   // Match history state
   const [matchHistory, setMatchHistory] = useState<Match[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selectedItems, setSelectedItems] = useState<Match[]>([]);
-  
+
   // Feedback modal state
   const [isFeedbackModalVisible, setIsFeedbackModalVisible] = useState(false);
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [feedbackRating, setFeedbackRating] = useState<SelectProps.Option | null>(null);
   const [feedbackComments, setFeedbackComments] = useState('');
   const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
-  
+
   // Status update modal state
   const [isStatusModalVisible, setIsStatusModalVisible] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<SelectProps.Option | null>(null);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
-  
+
   // Mock data for demo
   useEffect(() => {
     // Mock current match
@@ -102,7 +102,7 @@ const Dashboard: React.FC = () => {
       status: 'scheduled',
       created_at: new Date().toISOString()
     };
-    
+
     // Mock match history
     const mockMatchHistory: Match[] = [
       {
@@ -130,30 +130,30 @@ const Dashboard: React.FC = () => {
         created_at: new Date(Date.now() - 17 * 86400000).toISOString()
       }
     ];
-    
+
     // Set mock data
     setTimeout(() => {
       setCurrentMatch(mockCurrentMatch);
       setIsLoadingCurrent(false);
     }, 1000);
-    
+
     setTimeout(() => {
       setMatchHistory(mockMatchHistory);
       setTotalPages(1);
       setIsLoadingHistory(false);
     }, 1500);
   }, []);
-  
+
   // Handle feedback submission
   const handleFeedbackSubmit = async () => {
     if (!selectedMatch || !feedbackRating) return;
-    
+
     try {
       setIsSubmittingFeedback(true);
-      
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // Update match in state
       const updatedMatch = {
         ...selectedMatch,
@@ -162,15 +162,15 @@ const Dashboard: React.FC = () => {
           comments: feedbackComments
         }
       };
-      
+
       if (currentMatch?.id === selectedMatch.id) {
         setCurrentMatch(updatedMatch);
       }
-      
-      setMatchHistory(prev => 
+
+      setMatchHistory(prev =>
         prev.map(match => match.id === selectedMatch.id ? updatedMatch : match)
       );
-      
+
       // Show success notification
       addNotification({
         type: 'success',
@@ -178,7 +178,7 @@ const Dashboard: React.FC = () => {
         dismissible: true,
         onDismiss: () => {}
       });
-      
+
       // Close modal and reset state
       setIsFeedbackModalVisible(false);
       setSelectedMatch(null);
@@ -197,31 +197,31 @@ const Dashboard: React.FC = () => {
       setIsSubmittingFeedback(false);
     }
   };
-  
+
   // Handle status update
   const handleStatusUpdate = async () => {
     if (!selectedMatch || !selectedStatus) return;
-    
+
     try {
       setIsUpdatingStatus(true);
-      
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // Update match in state
       const updatedMatch = {
         ...selectedMatch,
         status: selectedStatus.value as string
       };
-      
+
       if (currentMatch?.id === selectedMatch.id) {
         setCurrentMatch(updatedMatch);
       }
-      
-      setMatchHistory(prev => 
+
+      setMatchHistory(prev =>
         prev.map(match => match.id === selectedMatch.id ? updatedMatch : match)
       );
-      
+
       // Show success notification
       addNotification({
         type: 'success',
@@ -229,7 +229,7 @@ const Dashboard: React.FC = () => {
         dismissible: true,
         onDismiss: () => {}
       });
-      
+
       // Close modal and reset state
       setIsStatusModalVisible(false);
       setSelectedMatch(null);
@@ -247,13 +247,13 @@ const Dashboard: React.FC = () => {
       setIsUpdatingStatus(false);
     }
   };
-  
+
   // Open feedback modal
   const openFeedbackModal = (match: Match) => {
     setSelectedMatch(match);
-    
+
     if (match.feedback) {
-      setFeedbackRating(RATING_OPTIONS.find(option => 
+      setFeedbackRating(RATING_OPTIONS.find(option =>
         parseInt(option.value as string) === match.feedback?.rating
       ) || null);
       setFeedbackComments(match.feedback.comments || '');
@@ -261,17 +261,17 @@ const Dashboard: React.FC = () => {
       setFeedbackRating(null);
       setFeedbackComments('');
     }
-    
+
     setIsFeedbackModalVisible(true);
   };
-  
+
   // Open status modal
   const openStatusModal = (match: Match) => {
     setSelectedMatch(match);
     setSelectedStatus(STATUS_OPTIONS.find(option => option.value === match.status) || null);
     setIsStatusModalVisible(true);
   };
-  
+
   // Get status indicator
   const getStatusIndicator = (status: string) => {
     switch (status) {
@@ -287,13 +287,13 @@ const Dashboard: React.FC = () => {
         return <StatusIndicator type="info">{status}</StatusIndicator>;
     }
   };
-  
+
   // Format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
   };
-  
+
   // Card definition for current match
   const cardDefinition: CardsProps.CardDefinition<Match> = {
     header: item => (
@@ -340,7 +340,7 @@ const Dashboard: React.FC = () => {
       }
     ]
   };
-  
+
   // Column definitions for match history table
   const columnDefinitions: TableProps.ColumnDefinition<Match>[] = [
     {
@@ -365,8 +365,8 @@ const Dashboard: React.FC = () => {
     {
       id: 'feedback',
       header: 'Feedback',
-      cell: item => item.feedback 
-        ? `${item.feedback.rating}/5` 
+      cell: item => item.feedback
+        ? `${item.feedback.rating}/5`
         : <StatusIndicator type="pending">Not provided</StatusIndicator>
     },
     {
@@ -382,7 +382,7 @@ const Dashboard: React.FC = () => {
       )
     }
   ];
-  
+
   return (
     <SpaceBetween size="l">
       <Container
@@ -425,7 +425,7 @@ const Dashboard: React.FC = () => {
           </div>
         </Grid>
       </Container>
-      
+
       <Container
         header={
           <Header
@@ -496,7 +496,7 @@ const Dashboard: React.FC = () => {
           </Box>
         )}
       </Container>
-      
+
       <Container
         header={
           <Header
@@ -573,7 +573,7 @@ const Dashboard: React.FC = () => {
           }
         />
       </Container>
-      
+
       {/* Feedback Modal */}
       <Modal
         visible={isFeedbackModalVisible}
@@ -602,7 +602,7 @@ const Dashboard: React.FC = () => {
               with {selectedMatch.participants.filter(p => p.id !== user?.id).map(p => p.name).join(', ')}.
             </Box>
           )}
-          
+
           <FormField
             label="Rating"
             description="How would you rate this coffee meeting?"
@@ -614,7 +614,7 @@ const Dashboard: React.FC = () => {
               placeholder="Select a rating"
             />
           </FormField>
-          
+
           <FormField
             label="Comments"
             description="Share your thoughts about this coffee meeting"
@@ -627,7 +627,7 @@ const Dashboard: React.FC = () => {
           </FormField>
         </SpaceBetween>
       </Modal>
-      
+
       {/* Status Update Modal */}
       <Modal
         visible={isStatusModalVisible}
@@ -656,7 +656,7 @@ const Dashboard: React.FC = () => {
               with {selectedMatch.participants.filter(p => p.id !== user?.id).map(p => p.name).join(', ')}.
             </Box>
           )}
-          
+
           <FormField
             label="Status"
             description="Select the current status of this coffee meeting"

@@ -1,8 +1,8 @@
 import React from 'react';
-import { 
-  Container, 
-  Header, 
-  SpaceBetween, 
+import {
+  Container,
+  Header,
+  SpaceBetween,
   Button,
   Box,
   Alert
@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Unauthorized: React.FC = () => {
   const navigate = useNavigate();
-  
+
   return (
     <div className="not-found-container">
       <Container
@@ -30,11 +30,11 @@ const Unauthorized: React.FC = () => {
           >
             You do not have the required permissions to access this page.
           </Alert>
-          
+
           <Box variant="p">
             Please contact your administrator if you believe this is an error.
           </Box>
-          
+
           <Button
             onClick={() => navigate('/')}
           >

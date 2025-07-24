@@ -26,12 +26,12 @@ interface NotificationProviderProps {
 
 export const NotificationProvider: React.FC<NotificationProviderProps> = ({ children }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  
+
   // Add notification
   const addNotification = (notification: Omit<Notification, 'id'>) => {
     const id = Math.random().toString(36).substring(2, 9);
     setNotifications(prev => [...prev, { ...notification, id }]);
-    
+
     // Auto-dismiss after 5 seconds if dismissible
     if (notification.dismissible) {
       setTimeout(() => {
@@ -39,17 +39,17 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
       }, 5000);
     }
   };
-  
+
   // Remove notification
   const removeNotification = (id: string) => {
     setNotifications(prev => prev.filter(notification => notification.id !== id));
   };
-  
+
   // Clear all notifications
   const clearNotifications = () => {
     setNotifications([]);
   };
-  
+
   return (
     <NotificationContext.Provider
       value={{

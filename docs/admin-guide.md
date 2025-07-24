@@ -70,14 +70,14 @@ Customize email notification templates:
 emailTemplates:
   matchNotification: |
     Hello {{name}},
-    
+
     You've been matched with {{match_names}} for a virtual coffee chat!
-    
+
     Suggested times based on your availability:
     {{suggested_times}}
-    
+
     Please coordinate directly to schedule your meeting.
-    
+
     Best regards,
     The Virtual Coffee Platform
 ```
@@ -92,7 +92,7 @@ auth:
     enabled: true
     region: "us-west-2"
     startUrl: "https://your-org.awsapps.com/start"
-  
+
   google:
     enabled: true
     clientId: "your-client-id"

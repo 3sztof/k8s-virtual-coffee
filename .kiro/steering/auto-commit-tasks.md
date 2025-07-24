@@ -19,7 +19,7 @@ This rule ensures that changes are automatically committed to git whenever a tas
 2. Commit format:
    ```
    Task [TASK_NUMBER]: [TASK_TITLE]
-   
+
    - Implemented [FEATURE/COMPONENT]
    - [ADDITIONAL DETAILS IF NECESSARY]
    ```
@@ -27,7 +27,7 @@ This rule ensures that changes are automatically committed to git whenever a tas
 3. For subtasks, include the parent task number:
    ```
    Task [PARENT_TASK].[SUBTASK_NUMBER]: [SUBTASK_TITLE]
-   
+
    - Implemented [FEATURE/COMPONENT]
    - [ADDITIONAL DETAILS IF NECESSARY]
    ```

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  AppLayout, 
-  SideNavigation, 
-  Container, 
+import {
+  AppLayout,
+  SideNavigation,
+  Container,
   ContentLayout,
   SpaceBetween,
   BreadcrumbGroup
@@ -19,19 +19,19 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [activeHref, setActiveHref] = useState(window.location.pathname);
-  
+
   // Handle navigation
   const handleNavigate = (href: string) => {
     setActiveHref(href);
     navigate(href);
   };
-  
+
   // Handle sign out
   const handleSignOut = () => {
     logout();
     navigate('/login');
   };
-  
+
   // Get current page title
   const getPageTitle = () => {
     switch (activeHref) {
@@ -45,18 +45,18 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         return 'Virtual Coffee Platform';
     }
   };
-  
+
   // Breadcrumb items
   const breadcrumbItems = [
     { text: 'Home', href: '/' },
     { text: getPageTitle(), href: activeHref }
   ];
-  
+
   return (
     <div>
-      <Header 
-        username={user?.name} 
-        onSignOut={handleSignOut} 
+      <Header
+        username={user?.name}
+        onSignOut={handleSignOut}
       />
       <AppLayout
         content={

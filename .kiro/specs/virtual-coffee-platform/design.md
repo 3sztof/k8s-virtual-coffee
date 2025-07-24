@@ -24,33 +24,33 @@ graph TB
             AC[ArgoCD Controller]
             AW[ArgoCD Workflows]
         end
-        
+
         subgraph "Deployment Instance A"
             FE_A[Frontend A]
             API_A[Go API A]
             SCHED_A[Scheduler A]
         end
-        
+
         subgraph "Deployment Instance B"
             FE_B[Frontend B]
             API_B[Go API B]
             SCHED_B[Scheduler B]
         end
     end
-    
+
     subgraph "AWS Services"
         DDB[DynamoDB Tables]
         SES[SES Email Service]
         SSO[AWS SSO]
         GOOGLE[Google OAuth]
     end
-    
+
     subgraph "Crossplane"
         XP[Crossplane Core]
         AWS_P[AWS Provider]
         COMP[Compositions]
     end
-    
+
     Users --> FE_A
     Users --> FE_B
     FE_A --> API_A
@@ -63,7 +63,7 @@ graph TB
     API_A --> GOOGLE
     API_B --> SSO
     API_B --> GOOGLE
-    
+
     AC --> XP
     XP --> AWS_P
     AWS_P --> DDB
@@ -87,7 +87,7 @@ Each virtual coffee deployment consists of:
 
 ### Frontend Application
 
-**Technology**: 
+**Technology**:
 - React.js with TypeScript for type safety and developer experience
 - AWS Cloudscape Design System for UI components and layout
 
@@ -407,7 +407,7 @@ make setup-argocd          # Install and configure ArgoCD
 make setup-secrets         # Configure ArgoCD repository secrets
 make setup-crossplane      # Install Crossplane and AWS provider
 
-# Instance Management  
+# Instance Management
 make deploy INSTANCE=team-a    # Deploy new virtual coffee instance
 make destroy INSTANCE=team-a   # Safely destroy instance and resources
 make config INSTANCE=team-a    # Update instance configuration
@@ -450,22 +450,22 @@ graph TD
     Root[Root Application] --> Crossplane[Crossplane App]
     Root --> Infrastructure[Infrastructure App]
     Root --> Applications[Applications App]
-    
+
     Crossplane --> Core[Crossplane Core]
     Crossplane --> Providers[AWS Provider]
     Crossplane --> Compositions[Compositions]
-    
+
     Infrastructure --> Claims[Resource Claims]
     Infrastructure --> Configs[Configuration Resources]
-    
+
     Applications --> DeploymentA[Deployment A]
     Applications --> DeploymentB[Deployment B]
-    
+
     Core -.-> Providers
     Providers -.-> Compositions
     Compositions -.-> Claims
     Claims -.-> Applications
-    
+
     classDef xp fill:#f9f,stroke:#333,stroke-width:2px
     class Core,Providers,Compositions xp
 ```

@@ -7,7 +7,7 @@ The Virtual Coffee Platform is a multi-tenant application that enables teams and
 ## Priority Classification
 
 **MVP (High Priority)**: Core functionality required for initial release
-**Phase 2 (Medium Priority)**: Important features for production readiness  
+**Phase 2 (Medium Priority)**: Important features for production readiness
 **Future (Low Priority)**: Nice-to-have features for later iterations
 
 ## Requirements

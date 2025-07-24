@@ -18,7 +18,7 @@ This rule ensures that pre-commit hooks are run and static code issues are fixed
    ```
    # Run pre-commit hooks on all staged files
    pre-commit run --all-files
-   
+
    # Fix any issues identified
    # Re-stage fixed files
    git add [fixed files]

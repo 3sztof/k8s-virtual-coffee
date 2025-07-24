@@ -89,23 +89,23 @@ MATCH_NOTIFICATION_TEMPLATE = """
         <div class="content">
             <p>Hello {{user_name}},</p>
             <p>You've been matched for a virtual coffee meeting! This is a great opportunity to connect with colleagues and share ideas in a casual setting.</p>
-            
+
             <div class="match-details">
                 <h2>Your Match Details</h2>
                 {{participants_html}}
-                
+
                 <p>We recommend scheduling a {{meeting_length}} minute meeting at a time that works for everyone.</p>
             </div>
-            
+
             <p>Some conversation starters:</p>
             <ul>
                 <li>What are you working on currently?</li>
                 <li>What's something interesting you've learned recently?</li>
                 <li>Any book/podcast recommendations?</li>
             </ul>
-            
+
             <p>Enjoy your virtual coffee!</p>
-            
+
             <a href="{{platform_url}}" class="button">View Match in Platform</a>
         </div>
         <div class="footer">
@@ -193,14 +193,14 @@ MATCH_REMINDER_TEMPLATE = """
         <div class="content">
             <p>Hello {{user_name}},</p>
             <p>This is a friendly reminder about your virtual coffee match. Have you scheduled your meeting yet?</p>
-            
+
             <div class="match-details">
                 <h2>Your Match Details</h2>
                 {{participants_html}}
             </div>
-            
+
             <p>Don't miss out on this opportunity to connect with your colleagues!</p>
-            
+
             <a href="{{platform_url}}" class="button">View Match in Platform</a>
         </div>
         <div class="footer">
@@ -291,16 +291,16 @@ WEEKLY_SUMMARY_TEMPLATE = """
         <div class="content">
             <p>Hello {{user_name}},</p>
             <p>Here's your weekly summary of virtual coffee activity:</p>
-            
+
             <div class="stats">
                 <h2>This Week's Stats</h2>
                 <div class="stat-item"><strong>Matches Created:</strong> {{matches_count}}</div>
                 <div class="stat-item"><strong>Active Participants:</strong> {{active_participants}}</div>
                 <div class="stat-item"><strong>Your Status:</strong> {{user_status}}</div>
             </div>
-            
+
             <p>{{custom_message}}</p>
-            
+
             <a href="{{platform_url}}" class="button">Visit Platform</a>
         </div>
         <div class="footer">
@@ -317,29 +317,29 @@ WEEKLY_SUMMARY_TEMPLATE = """
 def get_template(template_name):
     """
     Get an email template by name.
-    
+
     Args:
         template_name: The name of the template to retrieve
-        
+
     Returns:
         The template string or None if not found
     """
     templates = {
         "match_notification": MATCH_NOTIFICATION_TEMPLATE,
         "match_reminder": MATCH_REMINDER_TEMPLATE,
-        "weekly_summary": WEEKLY_SUMMARY_TEMPLATE
+        "weekly_summary": WEEKLY_SUMMARY_TEMPLATE,
     }
-    
+
     return templates.get(template_name)
 
 
 def format_participants_html(participants):
     """
     Format a list of participants into HTML.
-    
+
     Args:
         participants: List of User objects
-        
+
     Returns:
         HTML string with participant information
     """

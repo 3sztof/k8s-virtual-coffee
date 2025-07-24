@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { 
-  Container, 
-  Header, 
-  SpaceBetween, 
-  Box, 
+import {
+  Container,
+  Header,
+  SpaceBetween,
+  Box,
   ColumnLayout,
   Form,
   FormField,
@@ -23,23 +23,23 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 const Profile: React.FC = () => {
   const { user, refreshUser } = useAuth();
   const { addNotification } = useNotifications();
-  
+
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(user?.name || '');
   const [isPaused, setIsPaused] = useState(user?.is_paused || false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   // Handle form submission
   const handleSubmit = async () => {
     try {
       setIsSubmitting(true);
-      
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // Refresh user data
       await refreshUser();
-      
+
       // Show success notification
       addNotification({
         type: 'success',
@@ -47,7 +47,7 @@ const Profile: React.FC = () => {
         dismissible: true,
         onDismiss: () => {}
       });
-      
+
       // Exit edit mode
       setIsEditing(false);
     } catch (err) {
@@ -63,7 +63,7 @@ const Profile: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-  
+
   // Handle cancel
   const handleCancel = () => {
     // Reset form values
@@ -71,21 +71,21 @@ const Profile: React.FC = () => {
     setIsPaused(user?.is_paused || false);
     setIsEditing(false);
   };
-  
+
   // Handle participation toggle
   const handlePauseToggle = async (checked: boolean) => {
     setIsPaused(checked);
-    
+
     if (!isEditing) {
       try {
         setIsSubmitting(true);
-        
+
         // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
+
         // Refresh user data
         await refreshUser();
-        
+
         // Show success notification
         addNotification({
           type: 'success',
@@ -102,7 +102,7 @@ const Profile: React.FC = () => {
           onDismiss: () => {}
         });
         console.error('Participation update error:', err);
-        
+
         // Reset toggle
         setIsPaused(!checked);
       } finally {
@@ -110,7 +110,7 @@ const Profile: React.FC = () => {
       }
     }
   };
-  
+
   return (
     <SpaceBetween size="l">
       <Container
@@ -122,8 +122,8 @@ const Profile: React.FC = () => {
               isEditing ? (
                 <SpaceBetween direction="horizontal" size="xs">
                   <Button onClick={handleCancel}>Cancel</Button>
-                  <Button 
-                    variant="primary" 
+                  <Button
+                    variant="primary"
                     onClick={handleSubmit}
                     loading={isSubmitting}
                   >
@@ -151,7 +151,7 @@ const Profile: React.FC = () => {
                   onChange={({ detail }) => setName(detail.value)}
                 />
               </FormField>
-              
+
               <FormField
                 label="Email"
                 description="Your email address (cannot be changed)"
@@ -161,7 +161,7 @@ const Profile: React.FC = () => {
                   disabled
                 />
               </FormField>
-              
+
               <FormField
                 label="Participation status"
                 description="Toggle to pause or resume your participation in coffee meetings"
@@ -199,7 +199,7 @@ const Profile: React.FC = () => {
                 </div>
               </div>
             </ColumnLayout>
-            
+
             {user?.is_paused && (
               <Alert
                 type="info"

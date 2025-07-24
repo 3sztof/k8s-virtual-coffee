@@ -22,10 +22,10 @@ describe('MainLayout', () => {
         </MainLayout>
       </BrowserRouter>
     );
-    
+
     // Check if the content is rendered
     expect(screen.getByTestId('test-content')).toBeInTheDocument();
-    
+
     // Check if navigation elements are present
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
     expect(screen.getByText('My Profile')).toBeInTheDocument();

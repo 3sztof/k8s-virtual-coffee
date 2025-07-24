@@ -28,7 +28,7 @@ const sidebars = {
       ],
     },
   ],
-  
+
   adminSidebar: [
     {
       type: 'category',
@@ -43,7 +43,7 @@ const sidebars = {
       ],
     },
   ],
-  
+
   deploymentSidebar: [
     {
       type: 'category',

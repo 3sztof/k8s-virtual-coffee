@@ -1,11 +1,11 @@
 """OAuth integration for federated authentication providers."""
-from typing import Dict, Optional, List
 import secrets
+from typing import Optional
 from urllib.parse import urlencode
 
-from fastapi import HTTPException, status, Request, Cookie
-from pydantic import BaseModel
 import httpx
+from fastapi import HTTPException, status
+from pydantic import BaseModel
 
 # Configuration constants
 # In production, these should be loaded from environment variables or a secure configuration
@@ -33,18 +33,19 @@ GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"
 
 # Store for state parameters to prevent CSRF attacks
 # In production, this should be replaced with a proper storage solution (e.g., Redis)
-STATE_STORE: Dict[str, str] = {}
+STATE_STORE: dict[str, str] = {}
 
 
 class OAuthProvider(BaseModel):
     """OAuth provider configuration."""
+
     name: str
     client_id: str
     client_secret: str
     authorize_url: str
     token_url: str
     userinfo_url: str
-    scopes: List[str]
+    scopes: list[str]
     redirect_uri: str = ""  # Will be set dynamically
 
 
@@ -82,6 +83,7 @@ PROVIDERS = {
 
 class OAuthUserInfo(BaseModel):
     """User information from OAuth provider."""
+
     provider: str
     provider_user_id: str
     email: str
@@ -89,18 +91,20 @@ class OAuthUserInfo(BaseModel):
     picture: Optional[str] = None
 
 
-def generate_authorization_url(provider_id: str, base_url: str, deployment_id: str) -> str:
+def generate_authorization_url(
+    provider_id: str, base_url: str, deployment_id: str
+) -> str:
     """
     Generate the authorization URL for the specified OAuth provider.
-    
+
     Args:
         provider_id: OAuth provider ID
         base_url: Base URL of the application for constructing the redirect URI
         deployment_id: Deployment ID for multi-tenant support
-        
+
     Returns:
         Authorization URL for the OAuth provider
-        
+
     Raises:
         HTTPException: If the provider ID is invalid
     """
@@ -109,18 +113,18 @@ def generate_authorization_url(provider_id: str, base_url: str, deployment_id: s
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Invalid OAuth provider: {provider_id}",
         )
-        
+
     provider = PROVIDERS[provider_id]
-    
+
     # Set the redirect URI
     provider.redirect_uri = f"{base_url}/auth/{provider_id}/callback"
-    
+
     # Generate a random state parameter to prevent CSRF attacks
     state = secrets.token_urlsafe(32)
-    
+
     # Store the state parameter with the deployment ID
     STATE_STORE[state] = deployment_id
-    
+
     # Build the authorization URL
     params = {
         "client_id": provider.client_id,
@@ -129,22 +133,24 @@ def generate_authorization_url(provider_id: str, base_url: str, deployment_id: s
         "scope": " ".join(provider.scopes),
         "state": state,
     }
-    
+
     return f"{provider.authorize_url}?{urlencode(params)}"
 
 
-async def handle_oauth_callback(provider_id: str, code: str, state: str) -> OAuthUserInfo:
+async def handle_oauth_callback(
+    provider_id: str, code: str, state: str
+) -> OAuthUserInfo:
     """
     Handle the OAuth callback from the provider.
-    
+
     Args:
         provider_id: OAuth provider ID
         code: Authorization code from the provider
         state: State parameter from the provider
-        
+
     Returns:
         User information from the OAuth provider
-        
+
     Raises:
         HTTPException: If the provider ID is invalid or the state is invalid
     """
@@ -153,22 +159,22 @@ async def handle_oauth_callback(provider_id: str, code: str, state: str) -> OAut
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Invalid OAuth provider: {provider_id}",
         )
-        
+
     # Verify the state parameter to prevent CSRF attacks
     if state not in STATE_STORE:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid state parameter",
         )
-        
+
     # Get the deployment ID from the state store
     deployment_id = STATE_STORE[state]
-    
+
     # Remove the state parameter from the store
     del STATE_STORE[state]
-    
+
     provider = PROVIDERS[provider_id]
-    
+
     # Exchange the authorization code for an access token
     async with httpx.AsyncClient() as client:
         token_response = await client.post(
@@ -181,36 +187,36 @@ async def handle_oauth_callback(provider_id: str, code: str, state: str) -> OAut
                 "grant_type": "authorization_code",
             },
         )
-        
+
         if token_response.status_code != 200:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail=f"Failed to get access token: {token_response.text}",
             )
-            
+
         token_data = token_response.json()
         access_token = token_data.get("access_token")
-        
+
         if not access_token:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="No access token in response",
             )
-            
+
         # Get user information from the provider
         userinfo_response = await client.get(
             provider.userinfo_url,
             headers={"Authorization": f"Bearer {access_token}"},
         )
-        
+
         if userinfo_response.status_code != 200:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail=f"Failed to get user info: {userinfo_response.text}",
             )
-            
+
         userinfo_data = userinfo_response.json()
-        
+
         # Extract user information based on the provider
         if provider_id == "amazon-sso":
             # Amazon internal SSO for employees
@@ -249,13 +255,13 @@ async def handle_oauth_callback(provider_id: str, code: str, state: str) -> OAut
 def get_deployment_id_from_state(state: str) -> str:
     """
     Get the deployment ID from the state parameter.
-    
+
     Args:
         state: State parameter from the OAuth provider
-        
+
     Returns:
         Deployment ID associated with the state
-        
+
     Raises:
         HTTPException: If the state parameter is invalid
     """
@@ -264,5 +270,5 @@ def get_deployment_id_from_state(state: str) -> str:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid state parameter",
         )
-        
+
     return STATE_STORE[state]

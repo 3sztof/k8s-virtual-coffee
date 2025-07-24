@@ -1,29 +1,32 @@
-from pydantic import BaseModel, EmailStr, Field, validator
-from typing import List, Optional
-from datetime import datetime
 import uuid
+from datetime import datetime
+from typing import Optional
+
+from pydantic import BaseModel, EmailStr, Field, validator
 
 
 class Preferences(BaseModel):
     """User preferences for coffee meetings."""
-    availability: List[str] = Field(
+
+    availability: list[str] = Field(
         default_factory=list,
-        description="List of available time slots (e.g., 'Monday 9-10')"
+        description="List of available time slots (e.g., 'Monday 9-10')",
     )
-    topics: List[str] = Field(
+    topics: list[str] = Field(
         default_factory=list,
-        description="List of topics the user is interested in discussing"
+        description="List of topics the user is interested in discussing",
     )
     meeting_length: int = Field(
         default=30,
         description="Preferred meeting length in minutes",
         ge=15,
-        le=60
+        le=60,
     )
 
 
 class User(BaseModel):
     """User model for the Virtual Coffee Platform."""
+
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     email: EmailStr
     name: str
@@ -34,10 +37,10 @@ class User(BaseModel):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
-    @validator('name')
+    @validator("name")
     def name_must_not_be_empty(cls, v):
         if not v or not v.strip():
-            raise ValueError('Name cannot be empty')
+            raise ValueError("Name cannot be empty")
         return v.strip()
 
     class Config:
@@ -50,18 +53,19 @@ class User(BaseModel):
                 "preferences": {
                     "availability": ["Monday 9-10", "Wednesday 14-15"],
                     "topics": ["Technology", "Coffee", "Books"],
-                    "meeting_length": 30
+                    "meeting_length": 30,
                 },
                 "is_active": True,
                 "is_paused": False,
                 "created_at": "2023-04-01T12:00:00",
-                "updated_at": "2023-04-01T12:00:00"
-            }
+                "updated_at": "2023-04-01T12:00:00",
+            },
         }
 
 
 class UserCreate(BaseModel):
     """Schema for user creation."""
+
     email: EmailStr
     name: str
     preferences: Optional[Preferences] = None
@@ -74,14 +78,15 @@ class UserCreate(BaseModel):
                 "preferences": {
                     "availability": ["Monday 9-10", "Wednesday 14-15"],
                     "topics": ["Technology", "Coffee", "Books"],
-                    "meeting_length": 30
-                }
-            }
+                    "meeting_length": 30,
+                },
+            },
         }
 
 
 class UserUpdate(BaseModel):
     """Schema for user updates."""
+
     name: Optional[str] = None
     preferences: Optional[Preferences] = None
     is_paused: Optional[bool] = None
@@ -93,8 +98,8 @@ class UserUpdate(BaseModel):
                 "preferences": {
                     "availability": ["Monday 9-10", "Wednesday 14-15"],
                     "topics": ["Technology", "Coffee", "Books"],
-                    "meeting_length": 30
+                    "meeting_length": 30,
                 },
-                "is_paused": False
-            }
+                "is_paused": False,
+            },
         }

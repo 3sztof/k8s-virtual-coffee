@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { 
-  Container, 
-  Header, 
-  SpaceBetween, 
+import {
+  Container,
+  Header,
+  SpaceBetween,
   Button,
   Box,
   Alert,
@@ -19,23 +19,23 @@ const Login: React.FC = () => {
   const [activeTabId, setActiveTabId] = useState('federated');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
+
   // Handle AWS SSO login
   const handleAwsSsoLogin = () => {
     login('aws-sso');
   };
-  
+
   // Handle Google login
   const handleGoogleLogin = () => {
     login('google');
   };
-  
+
   // Handle direct login (for development only)
   const handleDirectLogin = () => {
     // This would typically call a login API endpoint
     console.log('Direct login with:', email, password);
   };
-  
+
   return (
     <div className="login-container">
       <Container
@@ -59,7 +59,7 @@ const Login: React.FC = () => {
               {error}
             </Alert>
           )}
-          
+
           <Tabs
             activeTabId={activeTabId}
             onChange={({ detail }) => setActiveTabId(detail.activeTabId)}
@@ -72,7 +72,7 @@ const Login: React.FC = () => {
                     <Box variant="p">
                       Sign in using your corporate or Google account.
                     </Box>
-                    
+
                     <Grid
                       gridDefinition={[
                         { colspan: { default: 12, xxs: 12, xs: 6 } },
@@ -89,7 +89,7 @@ const Login: React.FC = () => {
                       >
                         Sign in with AWS SSO
                       </Button>
-                      
+
                       <Button
                         variant="normal"
                         iconName="external"
@@ -127,7 +127,7 @@ const Login: React.FC = () => {
                       >
                         Direct login is only available in development mode.
                       </Alert>
-                      
+
                       <FormField
                         label="Email"
                         description="Enter your email address"
@@ -138,7 +138,7 @@ const Login: React.FC = () => {
                           type="email"
                         />
                       </FormField>
-                      
+
                       <FormField
                         label="Password"
                         description="Enter your password"
