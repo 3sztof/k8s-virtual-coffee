@@ -36,10 +36,6 @@ const sidebars = {
       items: [
         'admin-guide/introduction',
         'admin-guide/user-management',
-        'admin-guide/match-administration',
-        'admin-guide/configuration',
-        'admin-guide/monitoring',
-        'admin-guide/troubleshooting',
       ],
     },
   ],
